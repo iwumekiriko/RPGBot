@@ -25,8 +25,6 @@ public partial class Players
     public ulong GuildId { get; set; }
     [ForeignKey("GuildId")]
     public Guilds Guild { get; set; }
-
-    public bool? IsStarted { get; set; }
     public string? Class { get; set; }
 }
 public partial class Enemies

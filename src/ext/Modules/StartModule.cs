@@ -69,9 +69,9 @@ public class StartModule : InteractionModuleBase<SocketInteractionContext>
             db_user = new Users { Id = user.Id };
             _database.Add(db_user);
         }
-        var player = new Players { Guild = db_guild, User = db_user, IsStarted = true };
-        var isAlreadyExists = _database.Find<Players>(player.User.Id, player.Guild.Id);
-        if (isAlreadyExists == null)
+        var player = new Players { Guild = db_guild, User = db_user};
+        var db_player = _database.Find<Players>(player.User.Id, player.Guild.Id);
+        if (db_player == null)
         {
             _database.Add(player);
             _logger.LogInformation("New player with id: {0} was added", player.User.Id);

@@ -1,0 +1,31 @@
+#Ignore json files
+*.json
+
+#Ignore build folders
+/bin/
+bin/
+obj/
+/obj/
+Migrations/
+/Migrations/
+
+#Ignore db/log files
+*.db*
+*.db3
+*.log
+
+#Ignore scripts/txt files
+*.ps1
+*.txt
+
+#Ignore vscode folders
+/.vscode/
+/.vs/
+
+#Ignore misc files
+*.dll
+*.exe
+*.mp3
+
+#Ignore sln file
+*.sln

@@ -1,14 +1,8 @@
 ﻿using Discord;
 using Discord.Interactions;
-using RPGBot.Data;
-using RPGBot.Attributes;
 using RPGBot.Database;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace RPGBot.Modules;
     

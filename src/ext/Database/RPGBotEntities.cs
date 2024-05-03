@@ -24,8 +24,4 @@ public partial class RPGBotEntities : DbContext
         modelBuilder.Entity<Players>()
             .HasKey(p => new { p.UserId, p.GuildId });
     }
-
-
-
-
 }

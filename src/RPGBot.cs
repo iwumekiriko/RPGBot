@@ -60,7 +60,9 @@ public class RPGBot
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddDbContext<RPGBotEntities>(options => options.UseNpgsql(_configuration["connectionStrings:postgresConnection"]));
+        services.AddDbContext<RPGBotEntities>(options => options
+            .UseNpgsql(_configuration["connectionStrings:postgresConnection"]));
+            //.EnableSensitiveDataLogging(true));
         services.AddLogging(configure => configure.AddSerilog());
         services.RemoveAll<IHttpMessageHandlerBuilderFilter>();
         var logLevel = _configuration["logLevel"];

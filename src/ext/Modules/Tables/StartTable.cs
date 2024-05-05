@@ -32,8 +32,8 @@ public partial class GameModule
 
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message => {
-            message.Embed = _mainWindowEmbed.Build();
-            message.Components = _mainWindowComponents.Build();
+            message.Embed = _mainTableEmbed.Build();
+            message.Components = _mainTableComponents.Build();
         });
     }
     private async Task SetClass(string[] selections)

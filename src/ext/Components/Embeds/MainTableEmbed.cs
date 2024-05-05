@@ -2,9 +2,9 @@
 
 namespace RPGBot.Components.Embeds;
 
-internal class MainWindowEmbed : DefaultEmbed
+internal class MainTableEmbed : DefaultEmbed
 {
-    public MainWindowEmbed()
+    public MainTableEmbed()
     {
         Title = "Main";
         Description = "test123";

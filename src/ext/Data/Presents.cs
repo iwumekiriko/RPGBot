@@ -1,6 +1,6 @@
 ﻿namespace RPGBot.Data;
 
-public enum MomsPresent
+public enum Presents
 {
     Ring = 201,
     Potion = 202,

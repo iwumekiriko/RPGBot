@@ -3,14 +3,14 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Reflection;
-using RPGBot.Services;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
-using Microsoft.Extensions.Http;
 using RPGBot.Database;
-using Microsoft.EntityFrameworkCore;
+using RPGBot.Services;
 
 namespace RPGBot;
 
@@ -103,5 +103,13 @@ public class RPGBot
                 .WriteTo.Console()
                 .MinimumLevel.Is(level)
                 .CreateLogger();
+    }
+    public static bool IsDebug()
+    {
+#if DEBUG
+        return true;
+#else
+        return false;
+#endif
     }
 }

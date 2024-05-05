@@ -1,13 +1,12 @@
-﻿using Discord;
-using Discord.Interactions;
+﻿using Discord.Interactions;
 using RPGBot.Database;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using RPGBot.Data;
 using Microsoft.EntityFrameworkCore;
+using RPGBot.Services;
 
 namespace RPGBot.Modules;
-    
+
 public partial class GameModule : InteractionModuleBase<SocketInteractionContext>
 {
     public InteractionService Commands { get; set; }
@@ -21,15 +20,13 @@ public partial class GameModule : InteractionModuleBase<SocketInteractionContext
         _handler = services.GetRequiredService<InteractionHandler>();
         _logger = services.GetRequiredService<ILogger<InteractionHandler>>();
         _database = services.GetRequiredService<RPGBotEntities>();
-
-        PrepareData();
     }
     [SlashCommand("rpg", "the beginning of the end")]
     public async Task RolePlayGame()
     {
         var player = await GetOrCreatePlayer();
-        var embed = player.IsStarted ? _mainEmbed : _classChoiceEmbed;
-        var components = player.IsStarted ? _mainComponents : _classChoiceComponents;
+        var embed = player.IsStarted ? _mainWindowEmbed : _classChoiceEmbed;
+        var components = player.IsStarted ? _mainWindowComponents : _classChoiceComponents;
 
         await RespondAsync(
             embed: embed.Build(),
@@ -46,28 +43,9 @@ public partial class GameModule : InteractionModuleBase<SocketInteractionContext
         {
             player = new Players { Guild = guild, User = user };
             _database.Add(player);
+            _database.SaveChanges();
             _logger.LogInformation("New player with id: {playerId} was added to database", user.Id);
         }
-        _database.SaveChanges();
         return player;
     }
-    private Task PrepareData()
-    {
-        foreach (var gameClass in Enum.GetValues(typeof(Classes))) 
-            _classSelectMenu.AddOption(
-                label: gameClass.ToString(),
-                value: ((int)gameClass).ToString());
-
-        foreach (var gameRace in Enum.GetValues(typeof(MomsPresent)))
-            _presentSelectMenu.AddOption(
-                label: gameRace.ToString(),
-                value: ((int)gameRace).ToString());
-
-        _classChoiceComponents.WithSelectMenu(_classSelectMenu);
-        _presentChoiceComponents.WithSelectMenu(_presentSelectMenu);
-        _mainButtons.ToList().ForEach(button => _mainComponents.WithButton(button));
-
-        return Task.CompletedTask;
-    }
-
 }

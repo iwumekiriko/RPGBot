@@ -4,10 +4,9 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 
 
-namespace RPGBot;
+namespace RPGBot.Services;
 public class InteractionHandler
 {
     private readonly DiscordSocketClient _client;
@@ -17,25 +16,22 @@ public class InteractionHandler
     private readonly ILogger _logger;
 
     public InteractionHandler(
-        DiscordSocketClient client, 
-        InteractionService handler, 
-        IServiceProvider services, 
+        DiscordSocketClient client,
+        InteractionService handler,
+        IServiceProvider services,
         IConfiguration config
     )
     {
         _client = client;
         _handler = handler;
         _services = services;
-        _configuration = config;
+        _configuration = config;    
         _logger = services.GetRequiredService<ILogger<InteractionHandler>>();
     }
-
     public async Task InitializeAsync()
     {
         _client.Ready += ReadyAsync;
-        _handler.Log += LogAsync;
-
-        await _handler.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+        await _handler.AddModulesAsync(System.Reflection.Assembly.GetEntryAssembly(), _services);
 
         // Process the InteractionCreated payloads to execute Interactions commands
         _client.InteractionCreated += HandleInteraction;
@@ -43,18 +39,13 @@ public class InteractionHandler
         // Also process the result of the command execution.
         _handler.InteractionExecuted += HandleInteractionExecute;
     }
-
-    private Task LogAsync(LogMessage log)
-    {
-        Console.WriteLine(log);
-        return Task.CompletedTask;
-    }
-
     private async Task ReadyAsync()
     {
-        await _handler.RegisterCommandsGloballyAsync();
+        if (RPGBot.IsDebug())
+            await _handler.RegisterCommandsToGuildAsync(Convert.ToUInt64(_configuration["testGuild"]), true);
+        else
+            await _handler.RegisterCommandsGloballyAsync();
     }
-
     private async Task HandleInteraction(SocketInteraction interaction)
     {
         try
@@ -65,8 +56,8 @@ public class InteractionHandler
                 switch (result.Error)
                 {
                     case InteractionCommandError.UnmetPrecondition:
-                        _logger.LogError($"Occured Error while using command with id: {interaction.Id} by user: {context.User.Username}");
-                        await interaction.RespondAsync(result.ErrorReason, ephemeral: true);
+                        //_logger.LogError($"Occured Error while using command with id: {interaction.Id} by user: {context.User.Username}");
+                        //await interaction.RespondAsync(result.ErrorReason, ephemeral: true);
                         break;
                     default:
                         break;
@@ -78,18 +69,31 @@ public class InteractionHandler
                 await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
         }
     }
-
     private async Task HandleInteractionExecute(ICommandInfo command, IInteractionContext context, IResult result)
     {
         if (!result.IsSuccess)
+        {
+            //_logger.LogError("Occured Error while using command: /{commandName} by user: {User}", command.Name, context.User.Username);
             switch (result.Error)
             {
                 case InteractionCommandError.UnmetPrecondition:
-                    _logger.LogError($"Occured Error while using command: /{command.Name} by user: {context.User.Username}");
-                    await context.Interaction.RespondAsync(result.ErrorReason, ephemeral: true);
+                    await context.Interaction.RespondAsync($"Unmet Precondition: {result.ErrorReason}", ephemeral: true);
+                    break;
+                case InteractionCommandError.UnknownCommand:
+                    await context.Interaction.RespondAsync("Unknown command", ephemeral: true);
+                    break;
+                case InteractionCommandError.BadArgs:
+                    await context.Interaction.RespondAsync("Invalid number or arguments", ephemeral: true);
+                    break;
+                case InteractionCommandError.Exception:
+                    await context.Interaction.RespondAsync($"Command exception: {result.ErrorReason}", ephemeral: true);
+                    break;
+                case InteractionCommandError.Unsuccessful:
+                    await context.Interaction.RespondAsync("Command could not be executed", ephemeral: true);
                     break;
                 default:
                     break;
             }
+        }
     }
 }

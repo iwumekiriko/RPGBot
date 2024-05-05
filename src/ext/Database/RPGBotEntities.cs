@@ -7,10 +7,10 @@ public partial class RPGBotEntities : DbContext
     public RPGBotEntities(DbContextOptions<RPGBotEntities> options)
         : base(options)
     { }
-    public DbSet<Guilds> Guilds {  get; set; }
-    public DbSet<Users> Users { get; set; }
-    public DbSet<Players> Players { get; set; }
-    public DbSet<Enemies> Enemies { get; set; }
+    public virtual DbSet<Guilds> Guilds {  get; set; }
+    public virtual DbSet<Users> Users { get; set; }
+    public virtual DbSet<Players> Players { get; set; }
+    public virtual DbSet<Enemies> Enemies { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

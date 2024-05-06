@@ -17,10 +17,12 @@ namespace RPGBot.Modules
         public async Task InventoryHandler()
         {
             var items = _database.Inventory
-                .Where(i => i.UserId == Context.User.Id && i.GuildId == Context.Guild.Id)
-                .Select(i => i.Item)
-                .ToList();
-
+                .Where(i => i.UserId == Context.User.Id &&
+                            i.GuildId == Context.Guild.Id &&
+                            i.Amount != 0)
+                .Select(i => new {i.Item, i.Amount})
+                .ToDictionary(i => i.Item, i => i.Amount);
+            
             await Context.Interaction.DeferAsync();
             await FollowupAsync(embed: new InventoryEmbed(items).Build(), ephemeral: true);
         }

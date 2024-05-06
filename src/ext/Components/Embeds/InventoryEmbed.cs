@@ -3,13 +3,13 @@ using RPGBot.Database;
 
 namespace RPGBot.Components.Embeds;
 
-internal class InventoryEmbed : DefaultEmbed
+public class InventoryEmbed : DefaultEmbed
 {
-    public InventoryEmbed(List<Item> items)
+    public InventoryEmbed(Dictionary<Item, int> items)
     {
         var desc = string.Join(
             "\n", items.Select((item, index)
-                => $"**{index + 1}**. {item.Name}")
+                => $"**{index + 1}**. {item.Key.Name} — {item.Value}")
         );
 
         Title = "Inventory";

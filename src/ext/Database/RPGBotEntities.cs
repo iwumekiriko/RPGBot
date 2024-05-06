@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JsonProperty.EFCore;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace RPGBot.Database;
 

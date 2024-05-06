@@ -40,13 +40,13 @@ public partial class GameModule
     {
         var player = await GetOrCreatePlayer();
         player.ClassId = int.Parse(selections.First());
-        _database.SaveChanges();
+        await _database.SaveChangesAsync();
     }
     private async Task SetPresent(string[] selections)
     {
         var player = await GetOrCreatePlayer();
         player.PresentId = int.Parse(selections.First());
         player.IsStarted = true;
-        _database.SaveChanges();
+        await _database.SaveChangesAsync();
     }
 }

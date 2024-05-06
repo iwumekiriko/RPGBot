@@ -21,8 +21,6 @@ public partial class GameModule : InteractionModuleBase<SocketInteractionContext
         _handler = services.GetRequiredService<InteractionHandler>();
         _logger = services.GetRequiredService<ILogger<InteractionHandler>>();
         _database = services.GetRequiredService<RPGBotEntities>();
-
-        PrepareData();
     }
     [SlashCommand("rpg", "the beginning of the end")]
     public async Task RolePlayGame()
@@ -52,19 +50,6 @@ public partial class GameModule : InteractionModuleBase<SocketInteractionContext
         }
         return player;
     }
-    private Task PrepareData()
-    {
-        var item1 = new Weapon { Id = 101, Damage = 2, Name = "Sword", Weight = 2.0, Description = "Cool2 stuff" };
-        var item3 = new Weapon { Id = 13142, Damage = 1, Name = "Knife", Weight = 1.0, Description = "Cool stuff" };
-        var item2 = new Accessory { Id = 12413, Description = "Cool2", Name = "Ring" };
-        var items = new Item[] { item1, item2, item3 };
-        foreach( var item in items ) { _database.Items.Add(item); }
-        _database.SaveChanges();
-
-        _logger.LogInformation("Added");
-
-        return Task.CompletedTask; //TODO make a service file for data adding
-    }
     private async Task AddUserToInventoryAsync()
     {
         var items = await _database.Items.ToListAsync();
@@ -76,7 +61,7 @@ public partial class GameModule : InteractionModuleBase<SocketInteractionContext
                 UserId = Context.User.Id,
                 GuildId = Context.Guild.Id,
                 ItemId = item.Id,
-                Amount = 0
+                Amount = Math.Min(new Random().Next(1, 4), item.MaxInStack)
             };
 
             await _database.Inventory.AddAsync(inventoryItem);

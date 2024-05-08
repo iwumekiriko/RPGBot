@@ -44,24 +44,24 @@ public partial class Enemy
 public partial class Weapon : Item
 {
     public int Damage { get; set; }
-    public override int MaxInStack => 1;
-
+    public override int MaxInStack { get; set; } = 1;
 }
 public partial class Accessory : Item
 {
-    public int? UsesLeft { get; set; }
-    public override int MaxInStack => 1;
+    public int Uses { get; set; }
+    public int UsesLeft { get; set; }
+    public override int MaxInStack { get; set; } = 1;
 }
-public partial class Item
+public abstract partial class Item
 {
     [Key]
     public int Id { get; set; }
 
     public string Name { get; set; }
     public string Type { get; set; }
-    public virtual int MaxInStack { get; set; }
-    public double? Weight { get; set; }
-    public string? Description { get; set; }
+    public abstract int MaxInStack { get; set; }
+    public double Weight { get; set; }
+    public string Description { get; set; }
     public JsonDictionary Stats { get; set; } = new();
 }
 

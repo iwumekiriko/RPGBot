@@ -45,9 +45,6 @@ public class StartupService
     {
         await _database.Items.AddRangeAsync(InventoryItems.GetItems());
         await _database.SaveChangesAsync();
-
-        _database.Items.Select(item => item.MaxInStack).ToList().ForEach(Console.WriteLine);
-
         _logger.LogInformation(": Data Prepared");
     }
 }

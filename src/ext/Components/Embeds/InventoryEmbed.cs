@@ -9,7 +9,7 @@ public class InventoryEmbed : DefaultEmbed
     {
         var desc = string.Join(
             "\n", items.Select((item, index)
-                => $"**{index + 1}**. {item.Key.Name} — {item.Value}")
+                => $"**{index + 1}.** {item.Key.Name} — {item.Value}")
         );
 
         Title = "Inventory";

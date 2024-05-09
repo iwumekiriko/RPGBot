@@ -12,10 +12,17 @@ public class ClassSelectMenu : SelectMenuBuilder
         MinValues = 1;
         MaxValues = 1;
 
-        foreach (var gameClass in Enum.GetValues(typeof(Classes)))
+        var classes = new Dictionary<string, int>()
+        {
+            { "Warrior", 101 },
+            { "Hunter", 102 },
+            { "Mage", 103 }
+        };
+
+        foreach (var gameClass in classes)
             AddOption(
-                label: gameClass.ToString(),
-                value: ((int)gameClass).ToString()
+                label: gameClass.Key,
+                value: gameClass.Value.ToString()
             );
     }
 }

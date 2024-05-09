@@ -2,7 +2,6 @@
 using Discord.Interactions;
 using RPGBot.Components;
 using RPGBot.Components.Embeds;
-using RPGBot.Database;
 
 namespace RPGBot.Modules
 {
@@ -31,9 +30,7 @@ namespace RPGBot.Modules
         [ComponentInteraction("inventorySelectMenu")]
         public async Task ItemShowcase(string[] selections)
         {
-            var item = _database.Items
-                .Where(i => i.Id == Int32.Parse(selections.First()))
-                .First();
+            var item = await _inventory.GetItemByIdAsync(Int32.Parse(selections.First()));
 
             await Context.Interaction.DeferAsync();
             await ModifyOriginalResponseAsync(message =>

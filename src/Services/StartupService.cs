@@ -4,7 +4,6 @@ using RPGBot.Database;
 using RPGBot.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Net.NetworkInformation;
 
 namespace RPGBot.Services;
 

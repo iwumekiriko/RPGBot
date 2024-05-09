@@ -44,6 +44,7 @@ public class RPGBot
             .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>(), _interactionServiceConfig))
             .AddSingleton<InteractionHandler>()
             .AddSingleton<StartupService>()
+            .AddSingleton<InventoryHandler>()
             .AddSingleton<LoggingService>();
 
         ConfigureServices(services);

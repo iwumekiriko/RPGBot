@@ -28,9 +28,15 @@ public class StartupService
     }
     public async Task StartAsync()
     {
-        _database.Database.EnsureDeleted();
-        _database.Database.EnsureCreated();
-        await PrepareDataAsync();
+        var settings = _config.GetSection("parametres");
+        var isDevelopment = settings.GetValue<bool>("development");
+        if (isDevelopment) 
+        {
+            if (settings.GetValue<bool>("recreateDatabase"))
+                await RecreateDatabase();
+            if (settings.GetValue<bool>("prepareDatabase"))
+                await PrepareDatabase();
+        }
 
         var token = _config["token"];
         if (string.IsNullOrWhiteSpace(token))
@@ -40,10 +46,18 @@ public class StartupService
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
     }
-    private async Task PrepareDataAsync()
+    private async Task PrepareDatabase()
     {
         await _database.Items.AddRangeAsync(InventoryItems.GetItems());
         await _database.SaveChangesAsync();
-        _logger.LogInformation(": Data Prepared");
+        _logger.LogInformation(": Database prepared");
+    }
+    private Task RecreateDatabase()
+    {
+        _database.Database.EnsureDeleted();
+        _database.Database.EnsureCreated();
+        _logger.LogInformation(": Database recreated");
+
+        return Task.CompletedTask;
     }
 }

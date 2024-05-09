@@ -34,7 +34,11 @@ public class RPGBot
     {
         _configuration = new ConfigurationBuilder()
             .AddEnvironmentVariables(prefix: "rpg_")
-            .AddJsonFile("appsettings.json")
+            .AddJsonFile(
+                "appsettings.json",
+                optional: false,
+                reloadOnChange: true
+            )
             .Build();
 
         var services = new ServiceCollection()
@@ -62,8 +66,8 @@ public class RPGBot
     private static void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<RPGBotEntities>(options => options
-            .UseNpgsql(_configuration["connectionStrings:postgresConnection"]));
-            //.EnableSensitiveDataLogging(true));
+            .UseNpgsql(_configuration["connectionStrings:postgresConnection"])
+            .EnableSensitiveDataLogging(IsDebug()));
         services.AddLogging(configure => configure.AddSerilog());
         services.RemoveAll<IHttpMessageHandlerBuilderFilter>();
         var logLevel = _configuration["logLevel"];
@@ -92,16 +96,18 @@ public class RPGBot
                         level = Serilog.Events.LogEventLevel.Fatal;
                         break;
                     }
-                case "warn":
-                    {
+                case "warning":
+                    {                               
                         level = Serilog.Events.LogEventLevel.Warning;
                         break;
                     }
             }
         }
         Log.Logger = new LoggerConfiguration()
-                .WriteTo.File("logs/rpg_bot.log", rollingInterval: RollingInterval.Day)
+                .WriteTo.File(path: _configuration["parametres:logFile"],
+                              rollingInterval: RollingInterval.Day)
                 .WriteTo.Console()
+                .Filter.ByExcluding(l => l.RenderMessage().StartsWith("Executed DbCommand") && l.Level == Serilog.Events.LogEventLevel.Information)
                 .MinimumLevel.Is(level)
                 .CreateLogger();
     }

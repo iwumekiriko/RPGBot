@@ -1,7 +1,9 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Microsoft.Extensions.Logging;
 using RPGBot.Components;
 using RPGBot.Components.Embeds;
+using RPGBot.Database;
 
 namespace RPGBot.Modules
 {
@@ -10,16 +12,14 @@ namespace RPGBot.Modules
         private static readonly EmbedBuilder _mainTableEmbed = new MainTableEmbed();
         private static readonly ComponentBuilder _mainTableComponents = new MainTableComponents();
 
+        private static int CurrentItemId { get; set; } = 0;
+
         [ComponentInteraction("inventoryButton")]
         public async Task InventoryHandler()
         {
-            var items = _database.Inventory
-                .Where(i => i.UserId == Context.User.Id &&
-                            i.GuildId == Context.Guild.Id &&
-                            i.Amount != 0)
-                .Select(i => new {i.Item, i.Amount})
-                .ToDictionary(i => i.Item, i => i.Amount);
-            
+            var items = _inventory
+                .GetPlayerInventory(Context.Guild.Id, Context.User.Id);
+
             await Context.Interaction.DeferAsync();
             await FollowupAsync(
                 embed: new InventoryEmbed(items).Build(),
@@ -30,8 +30,11 @@ namespace RPGBot.Modules
         [ComponentInteraction("inventorySelectMenu")]
         public async Task ItemShowcase(string[] selections)
         {
-            var item = await _inventory.GetItemByIdAsync(Int32.Parse(selections.First()));
-
+            var itemId = Int32.Parse(selections.First());
+            CurrentItemId = itemId;
+            _logger.LogInformation("{id}", CurrentItemId);
+            _logger.LogInformation("{id}", itemId);
+            var item = await _inventory.GetItemByIdAsync(itemId);
             await Context.Interaction.DeferAsync();
             await ModifyOriginalResponseAsync(message =>
                 {
@@ -42,12 +45,10 @@ namespace RPGBot.Modules
         [ComponentInteraction("inventoryBackButton")]
         public async Task InventoryBack()
         {
-            var items = _database.Inventory
-                .Where(i => i.UserId == Context.User.Id &&
-                            i.GuildId == Context.Guild.Id &&
-                            i.Amount != 0)
-                .Select(i => new { i.Item, i.Amount })
-                .ToDictionary(i => i.Item, i => i.Amount);
+            _logger.LogInformation("{id}", CurrentItemId);
+
+            var items = _inventory
+                .GetPlayerInventory(Context.Guild.Id, Context.User.Id);
 
             await Context.Interaction.DeferAsync();
             await ModifyOriginalResponseAsync(message =>
@@ -55,6 +56,18 @@ namespace RPGBot.Modules
                 message.Embed = new InventoryEmbed(items).Build();
                 message.Components = new InventoryComponents(items).Build();
             });
+        }
+        [ComponentInteraction("dropItemButton")]
+        public async Task DropItem()
+        {
+            _database.Inventory.Where(
+            i => i.UserId == Context.User.Id &&
+                 i.GuildId == Context.Guild.Id &&
+                 i.ItemId == CurrentItemId
+            ).First().Amount -= 1;
+            await _database.SaveChangesAsync();
+            await DeferAsync();
+            await Context.Interaction.DeleteOriginalResponseAsync();
         }
     }
 }

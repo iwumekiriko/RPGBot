@@ -14,6 +14,7 @@ namespace RPGBot.Components
     {
         public ItemShowcaseComponents()
             => WithButton(new UseItemButton())
+              .WithButton(new DropItemButton())
               .WithButton(new InventoryBackButton());
     }
 }

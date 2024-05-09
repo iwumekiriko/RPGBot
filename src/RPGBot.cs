@@ -67,10 +67,10 @@ public class RPGBot
     {
         services.AddDbContext<RPGBotEntities>(options => options
             .UseNpgsql(_configuration["connectionStrings:postgresConnection"])
-            .EnableSensitiveDataLogging(IsDebug()));
+            .EnableSensitiveDataLogging(IsDevelopment()));
         services.AddLogging(configure => configure.AddSerilog());
         services.RemoveAll<IHttpMessageHandlerBuilderFilter>();
-        var logLevel = _configuration["logLevel"];
+        var logLevel = _configuration["parameters:logLevel"];
         var level = Serilog.Events.LogEventLevel.Error;
         if (!string.IsNullOrEmpty(logLevel))
         {
@@ -104,12 +104,17 @@ public class RPGBot
             }
         }
         Log.Logger = new LoggerConfiguration()
-                .WriteTo.File(path: _configuration["parametres:logFile"],
+                .WriteTo.File(path: _configuration["parameters:logFile"],
                               rollingInterval: RollingInterval.Day)
                 .WriteTo.Console()
-                .Filter.ByExcluding(l => l.RenderMessage().StartsWith("Executed DbCommand") && l.Level == Serilog.Events.LogEventLevel.Information)
+                .Filter.ByExcluding(l => l.RenderMessage().StartsWith("Executed DbCommand") &&
+                    l.Level == Serilog.Events.LogEventLevel.Information)
                 .MinimumLevel.Is(level)
                 .CreateLogger();
+    }
+    public static bool IsDevelopment()
+    {
+        return _configuration.GetValue<bool>("parameters:development");
     }
     public static bool IsDebug()
     {
@@ -119,4 +124,5 @@ public class RPGBot
         return false;
 #endif
     }
+    
 }

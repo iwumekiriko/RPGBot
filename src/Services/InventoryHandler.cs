@@ -25,6 +25,16 @@ public class InventoryHandler
     {
         return await _database.Items.FindAsync(id);
     }
+    public Dictionary<Item, int> GetPlayerInventory(ulong guildId, ulong userId)
+    {
+        var items = _database.Inventory
+            .Where(i => i.UserId == userId &&
+                        i.GuildId == guildId &&
+                        i.Amount != 0)
+            .Select(i => new { i.Item, i.Amount })
+            .ToDictionary(i => i.Item, i => i.Amount);
+        return items;
+    }
     public void Create(Item item)
     {
         _database.Items.Add(item);

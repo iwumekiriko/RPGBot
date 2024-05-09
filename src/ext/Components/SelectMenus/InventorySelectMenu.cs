@@ -1,5 +1,6 @@
 ﻿using Discord;
 using RPGBot.Database;
+using Serilog.Core;
 
 namespace RPGBot.Components.SelectMenues;
 
@@ -11,12 +12,22 @@ public class InventorySelectMenu : SelectMenuBuilder
         CustomId = "inventorySelectMenu";
         MinValues = 1;
         MaxValues = 1;
-
-        foreach (var item in items)
+        if (items.Count == 0) 
+        {
             AddOption(
-                label: item.Key.Name,
-                value: item.Key.Id.ToString()
+                label: "Empty",
+                value: "None"
             );
+            IsDisabled = true;
+        }
+        else
+        {
+            foreach (var item in items)
+                AddOption(
+                    label: item.Key.Name,
+                    value: item.Key.Id.ToString()
+                );
+        }
     }
 }
 

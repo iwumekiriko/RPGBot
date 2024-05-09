@@ -40,8 +40,9 @@ public class InteractionHandler
     }
     private async Task ReadyAsync()
     {
-        if (RPGBot.IsDebug())
-            await _handler.RegisterCommandsToGuildAsync(Convert.ToUInt64(_configuration["testGuild"]), true);
+        if (RPGBot.IsDevelopment())
+            await _handler.RegisterCommandsToGuildAsync(
+                Convert.ToUInt64(_configuration["parameters:testGuild"]), true);
         else
             await _handler.RegisterCommandsGloballyAsync();
     }

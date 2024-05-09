@@ -28,10 +28,9 @@ public class StartupService
     }
     public async Task StartAsync()
     {
-        var settings = _config.GetSection("parametres");
-        var isDevelopment = settings.GetValue<bool>("development");
-        if (isDevelopment) 
+        if (RPGBot.IsDevelopment()) 
         {
+            var settings = _config.GetSection("parameters");
             if (settings.GetValue<bool>("recreateDatabase"))
                 await RecreateDatabase();
             if (settings.GetValue<bool>("prepareDatabase"))

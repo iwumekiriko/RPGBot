@@ -75,13 +75,6 @@ public partial class GameModule
             ).First().Amount += 1;
         await _database.SaveChangesAsync();
     }
-    private async Task<Player?> GetPlayerIfExists()
-    {
-        var guild = await _database.Guilds.FindAsync(Context.Guild.Id) ?? new Guild { Id = Context.Guild.Id };
-        var user = await _database.Users.FindAsync(Context.User.Id) ?? new User { Id = Context.User.Id };
-        var player = await _database.Players.FirstOrDefaultAsync(p => p.Guild == guild && p.User == user);
-        return player;
-    }
     private async Task AddUsersInventoryAsync()
     {
         var items = await _inventory.GetItemsAsync();

@@ -1,11 +1,23 @@
-﻿using RPGBot.Data;
+﻿using RPGBot.Utils;
 using RPGBot.Database;
-using RPGBot.Utils;
 using System.Text;
 
 namespace RPGBot.Components.Embeds;
 
-internal class ItemShowcaseEmbed : DefaultEmbed
+public class InventoryEmbed : DefaultEmbed
+{
+    public InventoryEmbed(Dictionary<Item, int> items)
+    {
+        var itemsExist = items.Count != 0;
+        var desc = itemsExist ? string.Join(
+            "\n", items.Select((item, index)
+                => $"**{index + 1}.** {item.Key.Name} — {item.Value}")
+        ) : "**Currently you have no items**";
+        Title = "Inventory";
+        Description = desc;
+    }
+}
+public class ItemShowcaseEmbed : DefaultEmbed
 {
     public ItemShowcaseEmbed(Item item)
     {
@@ -22,7 +34,7 @@ internal class ItemShowcaseEmbed : DefaultEmbed
                 break;
         }
         sb.Append($"**Weight:** {item.Weight} kg\n\n");
-        sb.Append($"**Description** \n{item.Description}");;
+        sb.Append($"**Description** \n{item.Description}"); ;
         Title = item.Name;
         Description = sb.ToString();
     }

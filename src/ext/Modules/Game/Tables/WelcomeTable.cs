@@ -1,8 +1,8 @@
 ﻿using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 using RPGBot.Database;
-using RPGBot.Components;
-using RPGBot.Components.Embeds;
+using RPGBot.UserInterface;
+using RPGBot.UserInterface.Embeds;
 using Discord;
 using Microsoft.EntityFrameworkCore;
 using RPGBot.Modules.Game.Services;
@@ -28,7 +28,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = _classesEmbed.Build();
-            message.Components = new ClassChoiceComponents(classId).Build();
+            message.Components = new ClassChoiceComponent(classId).Build();
         });
     }
     [ComponentInteraction("creditsButton")]
@@ -50,7 +50,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new ClassShowcaseEmbed(classId).Build();
-            message.Components = new ClassChoiceComponents(classId).Build();
+            message.Components = new ClassChoiceComponent(classId).Build();
         });
     }
     [ComponentInteraction("submitClassButton")]
@@ -62,7 +62,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = _presentsEmbed.Build();
-            message.Components = new PresentChoiceComponents().Build();
+            message.Components = new PresentChoiceComponent().Build();
         });
     }
 

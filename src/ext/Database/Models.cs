@@ -40,36 +40,6 @@ public partial class Player
     public int Experience { get; set; } = 0;
     public int Level { get; set; } = 1;
 }
-//public partial class Warrior : Player
-//{
-//    public override int Health { get; set; } = 20;
-//    public override int Armor { get; set; } = 5;
-//    public override int Strength { get; set; } = 13;
-//    public override int Dexterity { get; set; } = 9;
-//    public override int Intellect { get; set; } = 8;
-//    public override int Memory { get; set; } = 3;
-//    public override int Conviction { get; set; } = 1;
-//}
-//public partial class Hunter : Player
-//{
-//    public override int Health { get; set; } = 20;
-//    public override int Armor { get; set; } = 4;
-//    public override int Strength { get; set; } = 8;
-//    public override int Dexterity { get; set; } = 13;
-//    public override int Intellect { get; set; } = 9;
-//    public override int Memory { get; set; } = 4;
-//    public override int Conviction { get; set; } = 1;
-//}
-//public partial class Mage : Player
-//{
-//    public override int Health { get; set; } = 20;
-//    public override int Armor { get; set; } = 2;
-//    public override int Strength { get; set; } = 9;
-//    public override int Dexterity { get; set; } = 8;
-//    public override int Intellect { get; set; } = 13;
-//    public override int Memory { get; set; } = 5;
-//    public override int Conviction { get; set; } = 1;
-//}
 public partial class Enemy
 {
     [Key]

@@ -1,7 +1,7 @@
 ﻿using Discord.Interactions;
 using Microsoft.EntityFrameworkCore;
-using RPGBot.Components.Embeds;
-using RPGBot.Components;
+using RPGBot.UserInterface.Embeds;
+using RPGBot.UserInterface;
 using RPGBot.Database;
 using RPGBot.Modules.Game.Services;
     
@@ -39,7 +39,7 @@ public class TavernTable(IServiceProvider services) : BaseModule(services)
         await DeferAsync();
         await FollowupAsync(
             embed: new QuestBoardEmbed(quests).Build(),
-            components: new QuestBoardComponents(quests).Build(),
+            components: new QuestBoardComponent(quests).Build(),
             ephemeral: true
         );
     }

@@ -1,8 +1,8 @@
 ﻿using Discord.Interactions;
 using Microsoft.EntityFrameworkCore;
 using RPGBot.Modules.Game.Services;
-using RPGBot.Components.Embeds;
-using RPGBot.Components;
+using RPGBot.UserInterface.Embeds;
+using RPGBot.UserInterface;
 using RPGBot.Database;
 
 namespace RPGBot.Modules.Game;
@@ -20,9 +20,9 @@ public partial class GameModule(IServiceProvider services) : BaseModule(services
         var phase = player.StartPhase;
         var (embed, components) = phase switch
         {
-            0 => (new WelcomeEmbed(), new WelcomeComponents()),
-            1 => (new ClassChoiceEmbed(), new ClassChoiceComponents()),
-            2 => (new PresentChoiceEmbed(), new PresentChoiceComponents()),
+            0 => (new WelcomeEmbed(), new WelcomeComponent()),
+            1 => (new ClassChoiceEmbed(), new ClassChoiceComponent()),
+            2 => (new PresentChoiceEmbed(), new PresentChoiceComponent()),
             3 => (mainEmbed, mainComponents),
             _ => throw new InvalidDataException()
         };

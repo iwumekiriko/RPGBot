@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
-using RPGBot.Components;
-using RPGBot.Components.Embeds;
+using RPGBot.UserInterface;
+using RPGBot.UserInterface.Embeds;
 
 namespace RPGBot.Modules.Game;
 
@@ -18,7 +18,7 @@ public partial class GameModule
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new ItemShowcaseEmbed(item).Build();
-            message.Components = new ItemShowcaseComponents().Build();
+            message.Components = new ItemShowcaseComponent().Build();
         });
     }
     [ComponentInteraction("inventoryBackButton")]
@@ -31,7 +31,7 @@ public partial class GameModule
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new InventoryEmbed(items).Build();
-            message.Components = new InventoryComponents(items).Build();
+            message.Components = new InventoryComponent(items).Build();
         });
     }
     [ComponentInteraction("dropItemButton")]

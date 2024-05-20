@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
-using RPGBot.Components.Embeds;
-using RPGBot.Components;
+using RPGBot.UserInterface.Embeds;
+using RPGBot.UserInterface;
 using RPGBot.Modules.Game.Services;
 
 namespace RPGBot.Modules.Game;
@@ -16,7 +16,7 @@ public class ProfileTable(IServiceProvider services) : BaseModule(services)
         await DeferAsync();
         await FollowupAsync(
             embed: new InventoryEmbed(items).Build(),
-            components: new InventoryComponents(items).Build(),
+            components: new InventoryComponent(items).Build(),
             ephemeral: true
         );
     }

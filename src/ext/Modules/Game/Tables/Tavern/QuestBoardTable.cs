@@ -1,7 +1,7 @@
 ﻿using Discord.Interactions;
 using Microsoft.EntityFrameworkCore;
-using RPGBot.Components;
-using RPGBot.Components.Embeds;
+using RPGBot.UserInterface;
+using RPGBot.UserInterface.Embeds;
 using RPGBot.Data;
 using RPGBot.Database;
 
@@ -29,7 +29,7 @@ public partial class GameModule
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new QuestShowcaseEmbed(quest.Key).Build();
-            message.Components = new QuestShowcaseComponents(quest.Value).Build();
+            message.Components = new QuestShowcaseComponent(quest.Value).Build();
         });
     }
     [ComponentInteraction("questBoardBackButton")]
@@ -46,7 +46,7 @@ public partial class GameModule
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new QuestBoardEmbed(quests).Build();
-            message.Components = new QuestBoardComponents(quests).Build();
+            message.Components = new QuestBoardComponent(quests).Build();
         });
     }
     [ComponentInteraction("takeQuestButton")]
@@ -66,7 +66,7 @@ public partial class GameModule
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new QuestShowcaseEmbed(quest).Build();
-            message.Components = new QuestShowcaseComponents(true).Build();
+            message.Components = new QuestShowcaseComponent(true).Build();
         });
     }
     [ComponentInteraction("completeQuestButton")]
@@ -112,7 +112,7 @@ public partial class GameModule
             await ModifyOriginalResponseAsync(message =>
             {
                 message.Embed = new QuestBoardEmbed(quests).Build();
-                message.Components = new QuestBoardComponents(quests).Build();
+                message.Components = new QuestBoardComponent(quests).Build();
             });
         }
         else

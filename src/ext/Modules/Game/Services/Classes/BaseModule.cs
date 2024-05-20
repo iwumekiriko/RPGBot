@@ -5,8 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using RPGBot.Services;
 using Discord;
-using RPGBot.Components.Embeds;
-using RPGBot.Components;
+using RPGBot.UserInterface.Embeds;
+using RPGBot.UserInterface;
 
 
 namespace RPGBot.Modules.Game.Services;

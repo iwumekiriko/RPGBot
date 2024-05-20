@@ -30,4 +30,58 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
         _database = services.GetRequiredService<RPGBotEntities>();
         _inventory = services.GetRequiredService<InventoryHandler>();
     }
+    public async Task<Player> GetOrCreatePlayerAsync()
+    {
+        var guild = await _database.Guilds.FindAsync(Context.Guild.Id) ?? new Guild { Id = Context.Guild.Id };
+        var user = await _database.Users.FindAsync(Context.User.Id) ?? new User { Id = Context.User.Id };
+        var player = await _database.Players.FirstOrDefaultAsync(p => p.Guild == guild && p.User == user);
+
+        if (player == null)
+        {
+            player = new Player { Guild = guild, User = user };
+            _database.Add(player);
+
+            await CreateUserDataAsync(player.Guild, player.User);
+            await _database.SaveChangesAsync();
+
+            _logger.LogInformation("New player with id: {playerId} was added to database", user.Id);
+        }
+
+        return player;
+    }
+    private async Task CreateUserDataAsync(Guild guild, User user)
+    {
+        await AddUsersInventoryAsync(guild, user);
+        await AddUserQuestsAsync(guild, user);
+    }
+    private async Task AddUsersInventoryAsync(Guild guild, User user)
+    {
+        var items = await _inventory.GetItemsAsync();
+
+        foreach (var item in items)
+        {
+            var inventoryItem = new Inventory
+            {
+                User = user,
+                Guild = guild,
+                ItemId = item.Id
+            };
+            await _database.Inventory.AddAsync(inventoryItem);
+        }
+    }
+    private async Task AddUserQuestsAsync(Guild guild, User user)
+    {
+        var quests = await _database.Quests.ToListAsync();
+
+        foreach (var quest in quests)
+        {
+            var userQuest = new QuestBoardItem
+            {
+                User = user,
+                Guild = guild,
+                QuestId = quest.Id
+            };
+            await _database.QuestBoard.AddAsync(userQuest);
+        }
+    }
 }

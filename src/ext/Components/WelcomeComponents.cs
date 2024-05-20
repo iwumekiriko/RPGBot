@@ -1,6 +1,6 @@
 ﻿using Discord;
 using RPGBot.Components.Buttons;
-using RPGBot.Components.SelectMenues;
+using RPGBot.Components.SelectMenus;
 
 namespace RPGBot.Components;
 
@@ -12,9 +12,11 @@ public class WelcomeComponents : ComponentBuilder
 }
 public class ClassChoiceComponents : ComponentBuilder
 {
-    public ClassChoiceComponents()
-        => WithSelectMenu(new ClassSelectMenu())
-          .WithButton(new SubmitClassButton());
+    public ClassChoiceComponents(int classId = 0)
+    {
+        WithSelectMenu(new ClassSelectMenu());
+        if (classId != 0) WithButton(new SubmitClassButton());
+    }
 }
 public class PresentChoiceComponents : ComponentBuilder
 {

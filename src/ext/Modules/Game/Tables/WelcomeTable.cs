@@ -7,6 +7,8 @@ using Discord;
 using Microsoft.EntityFrameworkCore;
 using RPGBot.Modules.Game.Services;
 using RPGBot.Data;
+using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RPGBot.Modules.Game;
 
@@ -15,19 +17,18 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     private static readonly EmbedBuilder _classesEmbed = new ClassChoiceEmbed();
     private static readonly EmbedBuilder _presentsEmbed = new PresentChoiceEmbed();
 
-    private static readonly ComponentBuilder _classesComponents = new ClassChoiceComponents();
-    private static readonly ComponentBuilder _presentsComponents = new PresentChoiceComponents();
-
     private static int classId;
 
     [ComponentInteraction("nextButton")]
     public async Task NextHandler()
     {
+        await SetPhase(1);
+
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = _classesEmbed.Build();
-            message.Components = _classesComponents.Build();
+            message.Components = new ClassChoiceComponents(classId).Build();
         });
     }
     [ComponentInteraction("creditsButton")]
@@ -49,6 +50,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new ClassShowcaseEmbed(classId).Build();
+            message.Components = new ClassChoiceComponents(classId).Build();
         });
     }
     [ComponentInteraction("submitClassButton")]
@@ -60,14 +62,14 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = _presentsEmbed.Build();
-            message.Components = _presentsComponents.Build();
+            message.Components = new PresentChoiceComponents().Build();
         });
     }
 
     [ComponentInteraction("presentSelectMenu")]
     public async Task PresentChoiceHandler(string[] selections)
     {
-        await AddPresent(selections);
+        await SetPresent(selections);
 
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
@@ -78,79 +80,39 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     }
     private async Task SetClass(int classId)
     {
-        var guild = await _database.Guilds.FindAsync(Context.Guild.Id) ?? new Guild { Id = Context.Guild.Id };
-        var user = await _database.Users.FindAsync(Context.User.Id) ?? new User { Id = Context.User.Id };
-        var player = await _database.Players.FirstOrDefaultAsync(p => p.Guild == guild && p.User == user);
-        if (player != null) return;
+        var player = await GetOrCreatePlayerAsync();
+        var playerClass = Classes.GetClasses()[classId];
+        await SetPhase(2, player);
+        player.ClassId = classId;
 
-        player = classId switch
+        var classRef = Activator.CreateInstance(playerClass) as GameClass;
+        foreach (var propertyInfo in typeof(GameClass).GetProperties())
         {
-            101 => new Warrior { Guild = guild, User = user },
-            102 => new Hunter { Guild = guild, User = user },
-            103 => new Mage { Guild = guild, User = user },
-            _ => throw new InvalidDataException()
-        };
-
-        await _database.Players.AddAsync(player);
-        await CreateUserDataAsync();
+            var value = propertyInfo.GetValue(classRef);
+            player.GetType()
+                .GetProperty(propertyInfo.Name)
+                .SetValue(player, value);
+        }
         await _database.SaveChangesAsync();
     }
-    private async Task AddPresent(string[] selections)
+    private async Task SetPresent(string[] selections)
     {
-        var guildId = Context.Guild.Id;
-        var userId = Context.User.Id;
-
-        var player = await _database.Players
-            .FirstOrDefaultAsync(
-                p => p.GuildId == guildId &&
-                p.UserId == userId
-            ) ?? throw new InvalidDataException();
-        player.isStarted = true;
+        var player = await GetOrCreatePlayerAsync();
+        await SetPhase(3, player);
 
         _database.Inventory.Where(
-            i => i.UserId == userId &&
-                 i.GuildId == guildId &&
+            i => i.UserId == player.UserId &&
+                 i.GuildId == player.GuildId &&
                  i.ItemId == int.Parse(selections.First())
             ).First().Amount += 1;
 
         await _database.SaveChangesAsync();
-        _logger.LogInformation("New player with id: {playerId} was added to database", userId);
     }
-    private async Task CreateUserDataAsync()
+    private async Task SetPhase(int phase, Player? player = null)
     {
-        await AddUsersInventoryAsync();
-        await AddUserQuestsAsync();
-    }
-    private async Task AddUsersInventoryAsync()
-    {
-        var items = await _inventory.GetItemsAsync();
-
-        foreach (var item in items)
-        {
-            var inventoryItem = new Inventory
-            {
-                UserId = Context.User.Id,
-                GuildId = Context.Guild.Id,
-                ItemId = item.Id
-            };
-            await _database.Inventory.AddAsync(inventoryItem);
-        }
+        player ??= await GetOrCreatePlayerAsync();
+        player.StartPhase = phase;
         await _database.SaveChangesAsync();
     }
-    private async Task AddUserQuestsAsync()
-    {
-        var quests = await _database.Quests.ToListAsync();
-
-        foreach (var quest in quests)
-        {
-            var userQuest = new QuestBoardItem
-            {
-                UserId = Context.User.Id,
-                GuildId = Context.Guild.Id,
-                QuestId = quest.Id
-            };
-            await _database.QuestBoard.AddAsync(userQuest);
-        }
-        await _database.SaveChangesAsync();
-    }
+    
 }

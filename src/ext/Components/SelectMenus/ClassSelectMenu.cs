@@ -12,18 +12,10 @@ public class ClassSelectMenu : SelectMenuBuilder
         MinValues = 1;
         MaxValues = 1;
 
-        var classes = new Dictionary<string, int>()
-        {
-            { "Warrior", 101 },
-            { "Hunter", 102 },
-            { "Mage", 103 }
-        };
-
-        foreach (var gameClass in classes)
+        foreach (var gameClass in Classes.GetClasses())
             AddOption(
-                label: gameClass.Key,
-                value: gameClass.Value.ToString()
+                label: gameClass.Value.Name,
+                value: gameClass.Key.ToString()
             );
     }
 }
-

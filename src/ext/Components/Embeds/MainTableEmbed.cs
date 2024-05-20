@@ -1,4 +1,4 @@
-﻿using RPGBot.Utils;
+﻿using RPGBot.Utils.Embeds;
 
 namespace RPGBot.Components.Embeds;
 

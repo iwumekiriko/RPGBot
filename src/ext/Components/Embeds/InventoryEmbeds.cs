@@ -1,6 +1,6 @@
-﻿using RPGBot.Utils;
-using RPGBot.Database;
+﻿using RPGBot.Database;
 using System.Text;
+using RPGBot.Utils.Embeds;
 
 namespace RPGBot.Components.Embeds;
 

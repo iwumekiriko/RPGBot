@@ -56,4 +56,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ext\Modules\Game\Tables\Journey\" />
+    <Folder Include="ext\Modules\Game\Tables\Welcome\" />
+  </ItemGroup>
+
 </Project>

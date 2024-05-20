@@ -13,13 +13,15 @@ public partial class RPGBotEntities : DbContext
     public virtual DbSet<Warrior> Warriors { get; set; }
     public virtual DbSet<Hunter> Hunters { get; set; }
     public virtual DbSet<Mage> Mages { get; set; }
-    public virtual DbSet<Enemy> Enemies { get; set; }   
+    //public virtual DbSet<Enemy> Enemies { get; set; }
     public virtual DbSet<Item> Items { get; set; }
     public virtual DbSet<Weapon> Weapons { get; set; }
     public virtual DbSet<Accessory> Accessories { get; set; }
     public virtual DbSet<Inventory> Inventory { get; set; }
+    public virtual DbSet<Quest> Quests { get; set; }
+    public virtual DbSet<QuestBoardItem> QuestBoard { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override async void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //if (!optionsBuilder.IsConfigured)
         //{
@@ -39,5 +41,8 @@ public partial class RPGBotEntities : DbContext
 
         modelBuilder.Entity<Item>()
             .HasDiscriminator(i => i.Type);
+
+        modelBuilder.Entity<QuestBoardItem>()
+            .HasKey(i => new { i.UserId, i.GuildId, i.QuestId });
     }
 }

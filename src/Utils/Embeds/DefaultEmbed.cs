@@ -1,11 +1,11 @@
 ﻿using Discord;
 
-namespace RPGBot.Utils;
+namespace RPGBot.Utils.Embeds;
 
 public class DefaultEmbed : EmbedBuilder
 {
     public DefaultEmbed()
     {
-        Color = new Color(16711935u);
+        Color = new Color(2895667u);
     }
 }

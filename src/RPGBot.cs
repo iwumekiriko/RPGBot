@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Reflection;
 using Serilog;
+
 using RPGBot.Database;
 using RPGBot.Services;
 
@@ -26,8 +27,10 @@ public class RPGBot
 
     private static readonly InteractionServiceConfig _interactionServiceConfig = new()
     {
-        LocalizationManager = new ResxLocalizationManager("RPGBot.Resources.CommandLocales", Assembly.GetEntryAssembly(),
-            new CultureInfo("en-US"))
+        LocalizationManager = new ResxLocalizationManager(
+            "RPGBot.Resources.Locals.CommandLocales", Assembly.GetEntryAssembly(),
+            new CultureInfo("en-US")
+        )
     };
 
     private static async Task Main(string[] args)
@@ -38,14 +41,16 @@ public class RPGBot
                 "appsettings.json",
                 optional: false,
                 reloadOnChange: true
-            )
-            .Build();
+            ).Build();
 
         var services = new ServiceCollection()
             .AddSingleton(_configuration)
             .AddSingleton(_socketConfig)
             .AddSingleton<DiscordSocketClient>()
-            .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>(), _interactionServiceConfig))
+            .AddSingleton(x => new InteractionService(
+                discord: x.GetRequiredService<DiscordSocketClient>(),
+                config: _interactionServiceConfig)
+            )
             .AddSingleton<InteractionHandler>()
             .AddSingleton<StartupService>()
             .AddSingleton<InventoryHandler>()
@@ -107,8 +112,8 @@ public class RPGBot
                 .WriteTo.File(path: _configuration["parameters:logFile"],
                               rollingInterval: RollingInterval.Day)
                 .WriteTo.Console()
-                .Filter.ByExcluding(l => l.RenderMessage().StartsWith("Executed DbCommand") &&
-                    l.Level == Serilog.Events.LogEventLevel.Information)
+                .Filter.ByExcluding(l => l.RenderMessage().StartsWith("Executed DbCommand") && // Didn't find how to disable db logs so had to hardcode...
+                    l.Level == Serilog.Events.LogEventLevel.Information) 
                 .MinimumLevel.Is(level)
                 .CreateLogger();
     }

@@ -4,6 +4,7 @@ using RPGBot.Database;
 using RPGBot.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace RPGBot.Services;
 
@@ -35,6 +36,7 @@ public class StartupService
                 await RecreateDatabase();
             if (settings.GetValue<bool>("prepareDatabase"))
                 await PrepareDatabase();
+            //await _database.Database.MigrateAsync();
         }
 
         var token = _config["token"];
@@ -48,6 +50,7 @@ public class StartupService
     private async Task PrepareDatabase()
     {
         await _database.Items.AddRangeAsync(InventoryItems.GetItems());
+        await _database.Quests.AddRangeAsync(Quests.GetQuests());
         await _database.SaveChangesAsync();
         _logger.LogInformation(": Database prepared");
     }

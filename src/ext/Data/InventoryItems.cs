@@ -11,6 +11,6 @@ public class InventoryItems
         var ring = new Accessory(3) { Id = 203, Name = "Ring", Weight = 0.2, Description = "Cool2"};
         var scroll = new Accessory { Id = 204, Name = "Scroll", Weight = 0.1, Description = "Cool212313"};
 
-        return [sword, knife, ring, scroll]; //TODO make an item repository service with Create, Delete, Get functions.
+        return [sword, knife, ring, scroll]; 
     }
 }

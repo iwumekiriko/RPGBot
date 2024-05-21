@@ -1,14 +1,10 @@
 ﻿using Discord.Interactions;
-using Microsoft.Extensions.Logging;
 using RPGBot.Database;
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
 using Discord;
-using Microsoft.EntityFrameworkCore;
 using RPGBot.Modules.Game.Services;
 using RPGBot.Data;
-using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
 
 namespace RPGBot.Modules.Game;
 
@@ -18,6 +14,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     private static readonly EmbedBuilder _presentsEmbed = new PresentChoiceEmbed();
 
     private static int classId;
+    private static int presentId;
 
     [ComponentInteraction("nextButton")]
     public async Task NextHandler()
@@ -69,7 +66,20 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("presentSelectMenu")]
     public async Task PresentChoiceHandler(string[] selections)
     {
-        await SetPresent(selections);
+        var id = Int32.Parse(selections.First());
+        presentId = id;
+        var item = await _inventory.GetItemByIdAsync(id);
+        await Context.Interaction.DeferAsync();
+        await ModifyOriginalResponseAsync(message =>
+        {
+            message.Embed = new ItemShowcaseEmbed(item).Build();
+            message.Components = new PresentChoiceComponent(presentId).Build();
+        });
+    }
+    [ComponentInteraction("submitPresentButton")]
+    public async Task SubmitPresentButton()
+    {
+        await SetPresent(presentId);
 
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
@@ -81,21 +91,20 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     private async Task SetClass(int classId)
     {
         var player = await GetOrCreatePlayerAsync();
-        var playerClass = Classes.GetClasses()[classId];
-        await SetPhase(2, player);
         player.ClassId = classId;
+        await SetPhase(2, player);
+
+        var playerClass = Classes.GetClasses()[classId];
 
         var classRef = Activator.CreateInstance(playerClass) as GameClass;
         foreach (var propertyInfo in typeof(GameClass).GetProperties())
         {
-            var value = propertyInfo.GetValue(classRef);
-            player.GetType()
-                .GetProperty(propertyInfo.Name)
-                .SetValue(player, value);
+            var property = player.GetType().GetProperty(propertyInfo.Name);
+            property?.SetValue(player, propertyInfo.GetValue(classRef));
         }
         await _database.SaveChangesAsync();
     }
-    private async Task SetPresent(string[] selections)
+    private async Task SetPresent(int presentId)
     {
         var player = await GetOrCreatePlayerAsync();
         await SetPhase(3, player);
@@ -103,7 +112,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         _database.Inventory.Where(
             i => i.UserId == player.UserId &&
                  i.GuildId == player.GuildId &&
-                 i.ItemId == int.Parse(selections.First())
+                 i.ItemId == presentId
             ).First().Amount += 1;
 
         await _database.SaveChangesAsync();

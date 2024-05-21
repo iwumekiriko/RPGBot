@@ -2,7 +2,7 @@
 using RPGBot.Utils.Embeds;
 using System.Text;
 
-namespace RPGBot.ext.Components.Embeds.Quests;
+namespace RPGBot.UserInterface.Embeds;
 
 public class QuestShowcaseEmbed : DefaultEmbed
 {

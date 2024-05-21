@@ -17,6 +17,7 @@ public class Classes
 }
 public abstract class GameClass
 {
+    public abstract int Id { get; }
     public abstract int Health { get; }
     public abstract int Armor { get; }
     public abstract int Strength { get; }
@@ -28,6 +29,7 @@ public abstract class GameClass
 
 public partial class Warrior : GameClass
 {
+    public override int Id { get => 101; }
     public override int Health { get => 20; }
     public override int Armor { get => 5; }
     public override int Strength { get => 13; }
@@ -38,6 +40,7 @@ public partial class Warrior : GameClass
 }
 public partial class Hunter : GameClass
 {
+    public override int Id { get => 102; }
     public override int Health { get => 20; }
     public override int Armor { get => 4; }
     public override int Strength { get => 8; }
@@ -47,7 +50,8 @@ public partial class Hunter : GameClass
     public override int Conviction { get => 1; }
 }
 public partial class Mage : GameClass
-{ 
+{
+    public override int Id { get => 103; }
     public override int Health { get => 20; }
     public override int Armor { get => 3; }
     public override int Strength { get => 9; }

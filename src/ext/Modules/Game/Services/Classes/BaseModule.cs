@@ -54,7 +54,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     }
     private async Task CreateUserDataAsync(Guild guild, User user)
     {
-        //await AddUsersInventoryAsync(guild, user);
+        await AddUsersInventoryAsync(guild, user);
         await AddUserQuestsAsync(guild, user);
     }
     private async Task AddUsersInventoryAsync(Guild guild, User user)

@@ -1,10 +1,12 @@
-﻿using Discord.Interactions;
-using RPGBot.Database.Models;
+﻿using Discord;
+using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+
 using RPGBot.Services;
-using Discord;
+using RPGBot.Database.Models;
+using RPGBot.Database;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface;
 using RPGBot.Data;

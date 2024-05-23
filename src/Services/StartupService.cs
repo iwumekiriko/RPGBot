@@ -1,11 +1,10 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using RPGBot.Database.Models;
-using RPGBot.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.IO;
-using System.Resources;
+
+using RPGBot.Database;
+using RPGBot.Data;
 
 namespace RPGBot.Services;
 

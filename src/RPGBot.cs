@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Reflection;
 using Serilog;
 
-using RPGBot.Database.Models;
+using RPGBot.Database;
 using RPGBot.Services;
 
 namespace RPGBot;

@@ -2,17 +2,7 @@
 
 public class Health
 {
-    public int Value
-    {
-        get => Value;
-        set
-        {
-            if (Value >= MaxValue)
-            {
-                Value = MaxValue;
-            }
-        }
-    }
+    public int Value { get; set; }
     public int MaxValue { get; set; }
 }
 public class Armor

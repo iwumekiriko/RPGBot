@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
+using RPGBot.Data;
 
 namespace RPGBot.Modules.Game;
 
@@ -13,25 +14,31 @@ public partial class GameModule
     {
         var itemId = Int32.Parse(selections.First());
         CurrentItemId = itemId;
-        var item = await _inventory.GetItemByIdAsync(itemId);
+        var item = Items.GetItems()[itemId];
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ItemShowcaseEmbed(item).Build();
+            message.Embed = new ItemShowcaseEmbed(item.PhotoLink).Build();
             message.Components = new ItemShowcaseComponent().Build();
         });
     }
     [ComponentInteraction("inventoryBackButton")]
     public async Task InventoryBack()
     {
-        var items = _inventory
-            .GetPlayerInventory(Context.Guild.Id, Context.User.Id);
+        var items = Items.GetItems();
+
+        var playerItems = _database.Inventory
+            .Where(i => i.UserId == Context.User.Id &&
+                        i.GuildId == Context.Guild.Id &&
+                        i.Amount != 0)
+            .Select(i => new { i.ItemId, i.Amount })
+            .ToDictionary(i => items[i.ItemId], i => i.Amount);
 
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new InventoryEmbed(items).Build();
-            message.Components = new InventoryComponent(items).Build();
+            message.Embed = new InventoryEmbed(playerItems).Build();
+            message.Components = new InventoryComponent(playerItems).Build();
         });
     }
     [ComponentInteraction("dropItemButton")]

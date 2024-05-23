@@ -1,4 +1,4 @@
-﻿using RPGBot.Database;
+﻿using RPGBot.Data;
 using System.Text;
 using RPGBot.Utils.Embeds;
 
@@ -6,23 +6,8 @@ namespace RPGBot.UserInterface.Embeds;
 
 public class ItemShowcaseEmbed : DefaultEmbed
 {
-    public ItemShowcaseEmbed(Item item)
+    public ItemShowcaseEmbed(string photoLink)
     {
-        var sb = new StringBuilder();
-        switch (item)
-        {
-            case Weapon weapon:
-                sb.Append($"**Damage:** {weapon.Damage} d/h\n");
-                break;
-
-            case Accessory accessory:
-                if (accessory.Uses != 0)
-                    sb.Append($"**Uses left:** {accessory.UsesLeft}/{accessory.Uses}\n");
-                break;
-        }
-        sb.Append($"**Weight:** {item.Weight} kg\n\n");
-        sb.Append($"**Description** \n{item.Description}"); ;
-        Title = item.Name;
-        Description = sb.ToString();
+        ImageUrl = photoLink;
     }
 }

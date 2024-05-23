@@ -1,8 +1,9 @@
-﻿using Discord.Interactions;
-using RPGBot.Database;
+﻿using Discord;
+using Discord.Interactions;
+
+using RPGBot.Database.Models;
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
-using Discord;
 using RPGBot.Modules.Game.Services;
 using RPGBot.Data;
 
@@ -42,11 +43,12 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     {
         var id = Convert.ToInt32(selections.First());
         classId = id;
+        var playerClass = Classes.GetClasses()[classId];
 
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ClassShowcaseEmbed(classId).Build();
+            message.Embed = new ClassShowcaseEmbed(playerClass.PhotoLink).Build();
             message.Components = new ClassChoiceComponent(classId).Build();
         });
     }
@@ -68,11 +70,11 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     {
         var id = Int32.Parse(selections.First());
         presentId = id;
-        var item = await _inventory.GetItemByIdAsync(id);
+        var item = Items.GetItems()[id];
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ItemShowcaseEmbed(item).Build();
+            message.Embed = new ItemShowcaseEmbed(item.PhotoLink).Build();
             message.Components = new PresentChoiceComponent(presentId).Build();
         });
     }
@@ -95,13 +97,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await SetPhase(2, player);
 
         var playerClass = Classes.GetClasses()[classId];
-
-        var classRef = Activator.CreateInstance(playerClass) as GameClass;
-        foreach (var propertyInfo in typeof(GameClass).GetProperties())
-        {
-            var property = player.GetType().GetProperty(propertyInfo.Name);
-            property?.SetValue(player, propertyInfo.GetValue(classRef));
-        }
+        CopyCharacteristics(player, playerClass);
         await _database.SaveChangesAsync();
     }
     private async Task SetPresent(int presentId)
@@ -123,5 +119,14 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         player.StartPhase = phase;
         await _database.SaveChangesAsync();
     }
-    
+    private static void CopyCharacteristics(Player player, GameClass gameClass)
+    {
+        player.Health = gameClass.Health.Value;
+        player.Armor = gameClass.Armor.Value;
+        player.Strength = gameClass.Strength.Value;
+        player.Dexterity = gameClass.Dexterity.Value;
+        player.Intellect = gameClass.Intellect.Value;
+        player.Memory = gameClass.Memory.Value;
+        player.Conviction = gameClass.Conviction.Value;
+    }
 }

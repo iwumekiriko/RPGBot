@@ -1,5 +1,5 @@
 ﻿using Discord.Interactions;
-using RPGBot.Database;
+using RPGBot.Database.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +7,7 @@ using RPGBot.Services;
 using Discord;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface;
+using RPGBot.Data;
 
 
 namespace RPGBot.Modules.Game.Services;
@@ -18,7 +19,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     public readonly InteractionHandler _handler;
     public readonly ILogger _logger;
     public readonly RPGBotEntities _database;
-    public readonly InventoryHandler _inventory;
+    //public readonly InventoryHandler _inventory;
 
     public static readonly EmbedBuilder mainEmbed = new MainTableEmbed();
     public static readonly ComponentBuilder mainComponents = new MainTableComponents();
@@ -28,7 +29,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
         _handler = services.GetRequiredService<InteractionHandler>();
         _logger = services.GetRequiredService<ILogger<InteractionHandler>>();
         _database = services.GetRequiredService<RPGBotEntities>();
-        _inventory = services.GetRequiredService<InventoryHandler>();
+        //_inventory = services.GetRequiredService<InventoryHandler>();
     }
     public async Task<Player> GetOrCreatePlayerAsync()
     {
@@ -51,12 +52,12 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     }
     private async Task CreateUserDataAsync(Guild guild, User user)
     {
-        await AddUsersInventoryAsync(guild, user);
+        //await AddUsersInventoryAsync(guild, user);
         await AddUserQuestsAsync(guild, user);
     }
     private async Task AddUsersInventoryAsync(Guild guild, User user)
     {
-        var items = await _inventory.GetItemsAsync();
+        var items = Items.GetItems();
 
         foreach (var item in items)
         {
@@ -64,7 +65,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
             {
                 User = user,
                 Guild = guild,
-                ItemId = item.Id
+                ItemId = item.Key
             };
             await _database.Inventory.AddAsync(inventoryItem);
         }

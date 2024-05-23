@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Reflection;
 using Serilog;
 
-using RPGBot.Database;
+using RPGBot.Database.Models;
 using RPGBot.Services;
 
 namespace RPGBot;
@@ -53,7 +53,7 @@ public class RPGBot
             )
             .AddSingleton<InteractionHandler>()
             .AddSingleton<StartupService>()
-            .AddSingleton<InventoryHandler>()
+            //.AddSingleton<InventoryHandler>()
             .AddSingleton<LoggingService>();
 
         ConfigureServices(services);

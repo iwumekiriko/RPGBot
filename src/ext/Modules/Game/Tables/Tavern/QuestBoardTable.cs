@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.Data;
-using RPGBot.Database;
+using RPGBot.Database.Models;
 
 namespace RPGBot.Modules.Game;
 
@@ -85,12 +85,12 @@ public partial class GameModule
 
         if (questRef.Progress >= quest.NeededToComplete)
         {
-            if (quest.ItemReward != null)
+            if (quest.ItemId != null)
             {
                 _database.Inventory.Where
                     (i => i.User == user &&
                      i.Guild == guild &&
-                     i.ItemId == quest.ItemReward.Id)
+                     i.ItemId == quest.ItemId)
                 .First().Amount += 1;
             }
             if (quest.MoneyReward > 0)

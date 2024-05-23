@@ -1,4 +1,4 @@
-﻿using RPGBot.Database;
+﻿using RPGBot.Database.Models;
 using RPGBot.Utils.Embeds;
 using System.Text;
 
@@ -11,8 +11,8 @@ public class QuestShowcaseEmbed : DefaultEmbed
         var sb = new StringBuilder();
         sb.Append($"**Required level: **{quest.RequiredLevel}\n");
         sb.Append($"**Task:** {quest.ShortDescription}\n");
-        if (quest.ItemReward != null)
-            sb.Append($"**Item reward: **{quest.ItemReward.Name}\n");
+        if (quest.ItemId != null)
+            sb.Append($"**Item reward: **{quest.ItemId}\n");
         if (quest.MoneyReward != 0)
             sb.Append($"**Money reward: **{quest.MoneyReward}\n");
         sb.Append($"**Experience reward: **{quest.ExpReward}\n\n");

@@ -1,6 +1,6 @@
 ﻿using Discord;
 using RPGBot.UserInterface.SelectMenues;
-using RPGBot.Database;
+using RPGBot.Data;
 
 namespace RPGBot.UserInterface;
 

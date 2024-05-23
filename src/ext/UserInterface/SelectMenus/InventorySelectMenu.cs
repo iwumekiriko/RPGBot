@@ -1,6 +1,5 @@
 ﻿using Discord;
-using RPGBot.Database;
-using Serilog.Core;
+using RPGBot.Data;
 
 namespace RPGBot.UserInterface.SelectMenues;
 

@@ -1,10 +1,11 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using RPGBot.Database;
+using RPGBot.Database.Models;
 using RPGBot.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Resources;
 
 namespace RPGBot.Services;
 
@@ -49,7 +50,7 @@ public class StartupService
     }
     private async Task PrepareDatabase()
     {
-        await _database.Items.AddRangeAsync(InventoryItems.GetItems());
+        //await _database.Items.AddRangeAsync(Items.GetItems());
         await _database.Quests.AddRangeAsync(Quests.GetQuests());
         await _database.SaveChangesAsync();
         _logger.LogInformation(": Database prepared");

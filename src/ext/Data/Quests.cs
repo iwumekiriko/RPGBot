@@ -1,4 +1,4 @@
-﻿using RPGBot.Database;
+﻿using RPGBot.Database.Models;
 
 namespace RPGBot.Data;
 

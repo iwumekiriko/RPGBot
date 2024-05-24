@@ -18,7 +18,7 @@ public partial class GameModule
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ItemShowcaseEmbed(item.PhotoLink).Build();
+            message.Embed = new ItemShowcaseEmbed(item).Build();
             message.Components = new ItemShowcaseComponent().Build();
         });
     }

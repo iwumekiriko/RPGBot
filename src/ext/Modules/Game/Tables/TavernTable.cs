@@ -5,6 +5,7 @@ using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface;
 using RPGBot.Database.Models;
 using RPGBot.Modules.Game.Services;
+using RPGBot.Data;
     
 namespace RPGBot.Modules.Game;
 
@@ -30,17 +31,19 @@ public class TavernTable(IServiceProvider services) : BaseModule(services)
         var player = await _database.Players.FirstOrDefaultAsync(p => p.Guild == guild && p.User == user);
         if (player == null) return;
 
-        var quests = _database.QuestBoard
+        var quests = Quests.GetQuests();
+
+        var playerQuests = _database.QuestBoard
             .Where(i => i.UserId == Context.User.Id &&
                         i.GuildId == Context.Guild.Id &&
                         !i.IsFinished)
-            .Select(i => new { i.Quest, i.IsStarted })
-            .ToDictionary(i => i.Quest, i => i.IsStarted);
+            .Select(i => new { i.QuestId, i.IsStarted })
+            .ToDictionary(i => quests[i.QuestId], i => i.IsStarted);
 
         await DeferAsync();
         await FollowupAsync(
-            embed: new QuestBoardEmbed(quests).Build(),
-            components: new QuestBoardComponent(quests).Build(),
+            embed: new QuestBoardEmbed(playerQuests).Build(),
+            components: new QuestBoardComponent(playerQuests).Build(),
             ephemeral: true
         );
     }

@@ -13,9 +13,6 @@ public partial class QuestBoardItem
     public Guild Guild { get; set; }
 
     public int QuestId { get; set; }
-    [ForeignKey("QuestId")]
-    public Quest Quest { get; set; }
-
     public bool IsStarted { get; set; }
     public bool IsFinished { get; set; }
     public int Progress { get; set; } = 0;

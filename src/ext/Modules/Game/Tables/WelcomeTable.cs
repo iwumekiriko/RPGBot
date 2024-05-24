@@ -74,7 +74,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ItemShowcaseEmbed(item.PhotoLink).Build();
+            message.Embed = new ItemShowcaseEmbed(item).Build();
             message.Components = new PresentChoiceComponent(presentId).Build();
         });
     }

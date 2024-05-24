@@ -44,20 +44,22 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
             player = new Player { Guild = guild, User = user };
             _database.Add(player);
 
-            await CreateUserDataAsync(player.Guild, player.User);
-            await _database.SaveChangesAsync();
+            await CreateUserData(player.Guild, player.User);
+            _database.SaveChanges();
 
             _logger.LogInformation("New player with id: {playerId} was added to database", user.Id);
         }
 
         return player;
     }
-    private async Task CreateUserDataAsync(Guild guild, User user)
+    private Task CreateUserData(Guild guild, User user)
     {
-        await AddUsersInventoryAsync(guild, user);
-        await AddUserQuestsAsync(guild, user);
+        AddUsersInventory(guild, user);
+        AddUserQuests(guild, user);
+
+        return Task.CompletedTask;
     }
-    private async Task AddUsersInventoryAsync(Guild guild, User user)
+    private Task AddUsersInventory(Guild guild, User user)
     {
         var items = Items.GetItems();
 
@@ -69,12 +71,14 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
                 Guild = guild,
                 ItemId = item.Key
             };
-            await _database.Inventory.AddAsync(inventoryItem);
+            _database.Inventory.Add(inventoryItem);
         }
+
+        return Task.CompletedTask;
     }
-    private async Task AddUserQuestsAsync(Guild guild, User user)
+    private Task AddUserQuests(Guild guild, User user)
     {
-        var quests = await _database.Quests.ToListAsync();
+        var quests = Quests.GetQuests();
 
         foreach (var quest in quests)
         {
@@ -82,9 +86,11 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
             {
                 User = user,
                 Guild = guild,
-                QuestId = quest.Id
+                QuestId = quest.Key
             };
-            await _database.QuestBoard.AddAsync(userQuest);
+            _database.QuestBoard.Add(userQuest);
         }
+
+        return Task.CompletedTask;
     }
 }

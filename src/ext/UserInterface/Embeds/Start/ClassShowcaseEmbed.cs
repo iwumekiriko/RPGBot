@@ -1,4 +1,7 @@
-﻿using RPGBot.Utils.Embeds;
+﻿using RPGBot.Data;
+using RPGBot.Utils.Embeds;
+using System.Diagnostics.Metrics;
+using System.Resources;
 
 namespace RPGBot.UserInterface.Embeds;
 

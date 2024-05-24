@@ -13,7 +13,6 @@ public partial class RPGBotEntities : DbContext
     public virtual DbSet<Player> Players { get; set; }
     public virtual DbSet<Enemy> Enemies { get; set; }
     public virtual DbSet<Inventory> Inventory { get; set; }
-    public virtual DbSet<Quest> Quests { get; set; }
     public virtual DbSet<QuestBoardItem> QuestBoard { get; set; }
 
     protected override async void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1,4 +1,4 @@
-﻿using RPGBot.Database.Models;
+﻿using RPGBot.Data;
 using RPGBot.Utils.Embeds;
 using System.Text;
 

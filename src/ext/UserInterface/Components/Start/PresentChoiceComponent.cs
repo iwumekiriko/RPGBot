@@ -9,7 +9,7 @@ public class PresentChoiceComponent : ComponentBuilder
 {
     public PresentChoiceComponent(int presentId = 0)
     {
-        WithSelectMenu(new PresentSelectMenu([201, 202, 203]));
+        WithSelectMenu(new PresentSelectMenu());
         if (presentId != 0) WithButton(new SubmitPresentButton());
     }
 }

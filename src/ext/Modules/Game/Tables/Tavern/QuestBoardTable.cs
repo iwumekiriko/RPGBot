@@ -16,43 +16,47 @@ public partial class GameModule
     {
         var questId = Int32.Parse(selections.First());
         CurrentQuestId = questId;
-        var quest = _database.QuestBoard
+        var isStarted = _database.QuestBoard
             .Where(q => q.UserId == Context.User.Id &&
                         q.GuildId == Context.Guild.Id &&
                         q.QuestId == questId)
-            .Select(q => new KeyValuePair<Quest, bool>(q.Quest, q.IsStarted))
+            .Select(q => q.IsStarted)
             .First();
+
+        var quest = Quests.GetQuests()[questId];
 
         await _database.SaveChangesAsync();
 
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new QuestShowcaseEmbed(quest.Key).Build();
-            message.Components = new QuestShowcaseComponent(quest.Value).Build();
+            message.Embed = new QuestShowcaseEmbed(quest).Build();
+            message.Components = new QuestShowcaseComponent(isStarted).Build();
         });
     }
     [ComponentInteraction("questBoardBackButton")]
     public async Task QuestBoardBack()
     {
-        var quests = _database.QuestBoard
+        var quests = Quests.GetQuests();
+
+        var playerQuests = _database.QuestBoard
             .Where(i => i.UserId == Context.User.Id &&
                         i.GuildId == Context.Guild.Id &&
                         !i.IsFinished)
-            .Select(i => new { i.Quest, i.IsStarted })
-            .ToDictionary(i => i.Quest, i => i.IsStarted);
+            .Select(i => new { i.QuestId, i.IsStarted })
+            .ToDictionary(i => quests[i.QuestId], i => i.IsStarted);
 
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new QuestBoardEmbed(quests).Build();
-            message.Components = new QuestBoardComponent(quests).Build();
+            message.Embed = new QuestBoardEmbed(playerQuests).Build();
+            message.Components = new QuestBoardComponent(playerQuests).Build();
         });
     }
     [ComponentInteraction("takeQuestButton")]
     public async Task TakeQuest()
     {
-        var quest = await _database.Quests.FindAsync(CurrentQuestId);
+        var quest = Quests.GetQuests()[CurrentQuestId] ;
         if (quest == null) return;
         
         var questRef = _database.QuestBoard.Where(
@@ -72,7 +76,7 @@ public partial class GameModule
     [ComponentInteraction("completeQuestButton")]
     public async Task CompleteQuest()
     {
-        var quest = await _database.Quests.FindAsync(CurrentQuestId);
+        var quest = Quests.GetQuests()[CurrentQuestId];
         var guild = await _database.Guilds.FindAsync(Context.Guild.Id);
         var user = await _database.Users.FindAsync(Context.User.Id);
         var player = await _database.Players.FirstOrDefaultAsync(p => p.Guild == guild && p.User == user);
@@ -101,18 +105,20 @@ public partial class GameModule
             questRef.IsFinished = true;
             await _database.SaveChangesAsync();
 
-            var quests = _database.QuestBoard
-            .Where(i => i.User == user &&
-                        i.Guild == guild &&
-                        !i.IsFinished)
-            .Select(i => new { i.Quest, i.IsStarted })
-            .ToDictionary(i => i.Quest, i => i.IsStarted);
+            var quests = Quests.GetQuests();
+
+            var playerQuests = _database.QuestBoard
+                .Where(i => i.UserId == Context.User.Id &&
+                            i.GuildId == Context.Guild.Id &&
+                            !i.IsFinished)
+                .Select(i => new { i.QuestId, i.IsStarted })
+                .ToDictionary(i => quests[i.QuestId], i => i.IsStarted);
 
             await DeferAsync();
             await ModifyOriginalResponseAsync(message =>
             {
-                message.Embed = new QuestBoardEmbed(quests).Build();
-                message.Components = new QuestBoardComponent(quests).Build();
+                message.Embed = new QuestBoardEmbed(playerQuests).Build();
+                message.Components = new QuestBoardComponent(playerQuests).Build();
             });
         }
         else

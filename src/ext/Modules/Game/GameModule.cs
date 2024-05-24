@@ -3,6 +3,7 @@
 using RPGBot.Modules.Game.Services;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface;
+using Discord;
 
 namespace RPGBot.Modules.Game;
 

@@ -1,11 +1,13 @@
 ﻿using RPGBot.Database;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http.Headers;
 
 namespace RPGBot.Data;
 
 public class Items
 {
     private static Dictionary<int, Item> _items;
+    private static readonly List<int> _presentIds = [201, 202, 203, 204];
     public static Dictionary<int, Item> GetItems()
     {
         _items ??= new Dictionary<int, Item>()
@@ -45,8 +47,11 @@ public class Items
                 PhotoLink = "https://imgur.com/ejzLAcq.png"
             },
         };
-
         return _items; 
+    }
+    public static List<Item> GetPresentItems()
+    {
+        return GetItems().Where(i => _presentIds.Contains(i.Key)).Select(i => i.Value).ToList();
     }
 }
 public class Weapon : Item

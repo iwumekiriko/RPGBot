@@ -5,21 +5,19 @@ namespace RPGBot.UserInterface.SelectMenus;
 
 public class PresentSelectMenu : SelectMenuBuilder
 {
-    public PresentSelectMenu(int[] presentIds)
+    public PresentSelectMenu()
     {
         Placeholder = "Select Present";
         CustomId = "presentSelectMenu";
         MinValues = 1;
         MaxValues = 1;
 
-        var items = Items.GetItems();
-        foreach (var id in presentIds)
+        var items = Items.GetPresentItems();
+        foreach (var gamePresent in items)
         {
-            var gamePresent = items[id];
-
             AddOption(
                 label: gamePresent.Name,
-                value: id.ToString()
+                value: gamePresent.Id.ToString()
             );
         }
             

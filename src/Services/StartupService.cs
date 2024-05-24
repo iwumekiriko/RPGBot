@@ -50,7 +50,7 @@ public class StartupService
     private async Task PrepareDatabase()
     {
         //await _database.Items.AddRangeAsync(Items.GetItems());
-        await _database.Quests.AddRangeAsync(Quests.GetQuests());
+        //await _database.Quests.AddRangeAsync(Quests.GetQuests());
         await _database.SaveChangesAsync();
         _logger.LogInformation(": Database prepared");
     }

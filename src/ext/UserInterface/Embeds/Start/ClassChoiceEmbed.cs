@@ -4,8 +4,8 @@ namespace RPGBot.UserInterface.Embeds;
 
 public class ClassChoiceEmbed : DefaultEmbed
 {
-    public ClassChoiceEmbed()
+    public ClassChoiceEmbed(string fileName)
     {
-        ImageUrl = "https://imgur.com/0S10i96.png";
+        ImageUrl = $"attachment://{fileName}";
     }
 }

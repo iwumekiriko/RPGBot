@@ -14,6 +14,7 @@ public partial class RPGBotEntities : DbContext
     public virtual DbSet<Enemy> Enemies { get; set; }
     public virtual DbSet<Inventory> Inventory { get; set; }
     public virtual DbSet<QuestBoardItem> QuestBoard { get; set; }
+    public virtual DbSet<ImageCache> ImageCaches { get; set; }
 
     protected override async void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

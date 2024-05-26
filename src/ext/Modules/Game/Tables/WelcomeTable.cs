@@ -6,15 +6,15 @@ using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.Modules.Game.Services;
 using RPGBot.Data;
+using RPGBot.Utils.Embeds;
+using RPGBot.Utils.Paths;
+using System;
 
 namespace RPGBot.Modules.Game;
 
 public class WelcomeModule(IServiceProvider services) : BaseModule(services)
 {
-    private static readonly EmbedBuilder _classesEmbed = new ClassChoiceEmbed();
-    private static readonly EmbedBuilder _presentsEmbed = new PresentChoiceEmbed();
-
-    private static int classId;
+    private static GameClass playerClass;
     private static int presentId;
 
     [ComponentInteraction("nextButton")]
@@ -22,11 +22,12 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     {
         await SetPhase(1);
 
-        await Context.Interaction.DeferAsync();
+        var url = await _images.GetImageUrlAsync("Class.png");
+        await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = _classesEmbed.Build();
-            message.Components = new ClassChoiceComponent(classId).Build();
+            message.Embed = new OnlyImageEmbed(url).Build();
+            message.Components = new ClassChoiceComponent().Build();
         });
     }
     [ComponentInteraction("creditsButton")]
@@ -42,29 +43,29 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     public async Task ClassShowcase(string[] selections)
     {
         var id = Convert.ToInt32(selections.First());
-        classId = id;
-        var playerClass = Classes.GetClasses()[classId];
+        var gameClass = Classes.GetClasses()[id];
+        var url = await _images.GetImageUrlAsync($"{gameClass.Name}.png");
+        playerClass = gameClass;
 
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ClassShowcaseEmbed(playerClass.PhotoLink).Build();
-            message.Components = new ClassChoiceComponent(classId).Build();
+            message.Embed = new OnlyImageEmbed(url).Build();
+            message.Components = new ClassChoiceComponent(id).Build();
         });
     }
     [ComponentInteraction("submitClassButton")]
     public async Task SubmitClassButton()
     {
-        await SetClass(classId);
-
+        await SetClass();
+        var url = await _images.GetImageUrlAsync("Present.png");
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = _presentsEmbed.Build();
+            message.Embed = new OnlyImageEmbed(url).Build();
             message.Components = new PresentChoiceComponent().Build();
         });
     }
-
     [ComponentInteraction("presentSelectMenu")]
     public async Task PresentChoiceHandler(string[] selections)
     {
@@ -90,14 +91,11 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
             message.Components = mainComponents.Build();
         });
     }
-    private async Task SetClass(int classId)
+    private async Task SetClass()
     {
         var player = await GetOrCreatePlayerAsync();
-        player.ClassId = classId;
         await SetPhase(2, player);
-
-        var playerClass = Classes.GetClasses()[classId];
-        CopyCharacteristics(player, playerClass);
+        CopyStats(player, playerClass);
         await _database.SaveChangesAsync();
     }
     private async Task SetPresent(int presentId)
@@ -113,14 +111,9 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
 
         await _database.SaveChangesAsync();
     }
-    private async Task SetPhase(int phase, Player? player = null)
+    private static void CopyStats(Player player, GameClass gameClass)
     {
-        player ??= await GetOrCreatePlayerAsync();
-        player.StartPhase = phase;
-        await _database.SaveChangesAsync();
-    }
-    private static void CopyCharacteristics(Player player, GameClass gameClass)
-    {
+        player.ClassId = gameClass.Id;
         player.Health = gameClass.Health.Value;
         player.Armor = gameClass.Armor.Value;
         player.Strength = gameClass.Strength.Value;
@@ -129,4 +122,10 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         player.Memory = gameClass.Memory.Value;
         player.Conviction = gameClass.Conviction.Value;
     }
+    private async Task SetPhase(int phase, Player? player = null)
+    {
+        player ??= await GetOrCreatePlayerAsync();
+        player.StartPhase = phase;
+        await _database.SaveChangesAsync();
+    }   
 }

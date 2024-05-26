@@ -48,11 +48,12 @@ public class RPGBot
             .AddSingleton(_socketConfig)
             .AddSingleton<DiscordSocketClient>()
             .AddSingleton(x => new InteractionService(
-                discord: x.GetRequiredService<DiscordSocketClient>(),
-                config: _interactionServiceConfig)
+                x.GetRequiredService<DiscordSocketClient>(),
+                _interactionServiceConfig)
             )
             .AddSingleton<InteractionHandler>()
             .AddSingleton<StartupService>()
+            .AddSingleton<ImagesHandler>()
             //.AddSingleton<InventoryHandler>()
             .AddSingleton<LoggingService>();
 

@@ -21,6 +21,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     public readonly InteractionHandler _handler;
     public readonly ILogger _logger;
     public readonly RPGBotEntities _database;
+    public readonly ImagesHandler _images;
     //public readonly InventoryHandler _inventory;
 
     public static readonly EmbedBuilder mainEmbed = new MainTableEmbed();
@@ -31,6 +32,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
         _handler = services.GetRequiredService<InteractionHandler>();
         _logger = services.GetRequiredService<ILogger<InteractionHandler>>();
         _database = services.GetRequiredService<RPGBotEntities>();
+        _images = services.GetRequiredService<ImagesHandler>();
         //_inventory = services.GetRequiredService<InventoryHandler>();
     }
     public async Task<Player> GetOrCreatePlayerAsync()

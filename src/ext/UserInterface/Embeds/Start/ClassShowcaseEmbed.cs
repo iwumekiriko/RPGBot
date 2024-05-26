@@ -1,14 +1,12 @@
-﻿using RPGBot.Data;
+﻿using Discord;
 using RPGBot.Utils.Embeds;
-using System.Diagnostics.Metrics;
-using System.Resources;
 
 namespace RPGBot.UserInterface.Embeds;
 
 public class ClassShowcaseEmbed : DefaultEmbed
 {
-    public ClassShowcaseEmbed(string photoLink)
+    public ClassShowcaseEmbed(string fileName)
     {
-        ImageUrl = photoLink;
+        ImageUrl = $"attachment://{fileName}";
     }
 }

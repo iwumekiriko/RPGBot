@@ -1,9 +1,10 @@
 ﻿using Discord.Interactions;
 
 using RPGBot.Modules.Game.Services;
+using Discord;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface;
-using Discord;
+using RPGBot.Utils.Embeds;
 
 namespace RPGBot.Modules.Game;
 
@@ -13,24 +14,23 @@ public partial class GameModule(IServiceProvider services) : BaseModule(services
     public async Task RolePlayGame()
     {
         await RespondAsync(
-            "Loading data..."
+            "Loading data, please wait <a:loading:1244113411659530294>"
         );
 
         var player = await GetOrCreatePlayerAsync();
-        var phase = player.StartPhase;
-        var (embed, components) = phase switch
+        var (photoName, components) = player.StartPhase switch
         {
-            0 => (new WelcomeEmbed(), new WelcomeComponent()),
-            1 => (new ClassChoiceEmbed(), new ClassChoiceComponent()),
-            2 => (new PresentChoiceEmbed(), new PresentChoiceComponent()),
-            3 => (mainEmbed, mainComponents),
+            0 => ("Welcome.png", new WelcomeComponent()),
+            1 => ("Class.png", new ClassChoiceComponent()),
+            2 => ("Present.png", new PresentChoiceComponent()),
+            3 => ("Welcome.png", mainComponents), //Main.png
             _ => throw new InvalidDataException()
         };
-
+        var imageUrl = await _images.GetImageUrlAsync(photoName);
         await ModifyOriginalResponseAsync(message =>
         {
             message.Content = null;
-            message.Embed = embed.Build();
+            message.Embed = new OnlyImageEmbed(imageUrl).Build();
             message.Components = components.Build();
         });
     }

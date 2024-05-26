@@ -1,10 +1,13 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Imgur.API.Authentication;
+using Imgur.API.Endpoints;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using RPGBot.Database;
-using RPGBot.Data;
+using RPGBot.Database.Models;
+using RPGBot.Utils.Paths;
 
 namespace RPGBot.Services;
 
@@ -29,16 +32,6 @@ public class StartupService
     }
     public async Task StartAsync()
     {
-        if (RPGBot.IsDevelopment()) 
-        {
-            var settings = _config.GetSection("parameters");
-            if (settings.GetValue<bool>("recreateDatabase"))
-                await RecreateDatabase();
-            if (settings.GetValue<bool>("prepareDatabase"))
-                await PrepareDatabase();
-            //await _database.Database.MigrateAsync();
-        }
-
         var token = _config["token"];
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -46,6 +39,20 @@ public class StartupService
         }
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
+
+        if (RPGBot.IsDevelopment())
+            await PrepareAsync();
+    }
+    private async Task PrepareAsync()
+    {
+        var settings = _config.GetSection("parameters");
+        if (settings.GetValue<bool>("recreateDatabase"))
+            await RecreateDatabase();
+        if (settings.GetValue<bool>("prepareDatabase"))
+            await PrepareDatabase();
+        if (settings.GetValue<bool>("cacheImages"))
+            await UploadImages();
+        //await _database.Database.MigrateAsync();
     }
     private async Task PrepareDatabase()
     {
@@ -62,4 +69,27 @@ public class StartupService
 
         return Task.CompletedTask;
     }
+    public async Task UploadImages()
+    {
+        var clientId = _config["imgurApi:clientId"];
+        var apiClient = new ApiClient(clientId);
+
+        var filePaths = PathHelper.GetAllPhotos();
+        foreach (var filePath in filePaths) 
+        {
+            var httpClient = new HttpClient();
+            using var fileStream = File.OpenRead(filePath);
+            var imageEndpoint = new ImageEndpoint(apiClient, httpClient);
+            var imageUpload = await imageEndpoint.UploadImageAsync(fileStream);
+            var uploadedImage = new ImageCache() 
+            { 
+                ImageName = Path.GetFileName(filePath),
+                ImageUrl = imageUpload.Link 
+            };
+            _database.ImageCaches.Add(uploadedImage);
+        }
+        await _database.SaveChangesAsync();
+        _logger.LogInformation(": Photos uploaded");
+    }
+
 }

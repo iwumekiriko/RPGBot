@@ -71,6 +71,7 @@ public class StartupService
     }
     public async Task UploadImages()
     {
+        _logger.LogInformation(": Uploading images to imgur...");
         var clientId = _config["imgurApi:clientId"];
         var apiClient = new ApiClient(clientId);
 
@@ -89,7 +90,7 @@ public class StartupService
             _database.ImageCaches.Add(uploadedImage);
         }
         await _database.SaveChangesAsync();
-        _logger.LogInformation(": Photos uploaded");
+        _logger.LogInformation(": Images uploaded");
     }
 
 }

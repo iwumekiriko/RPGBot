@@ -7,9 +7,9 @@ namespace RPGBot.UserInterface;
 
 public class PresentChoiceComponent : ComponentBuilder
 {
-    public PresentChoiceComponent(int presentId = 0)
+    public PresentChoiceComponent(bool isSelected = false)
     {
         WithSelectMenu(new PresentSelectMenu());
-        if (presentId != 0) WithButton(new SubmitPresentButton());
+        if (isSelected) WithButton(new SubmitPresentButton());
     }
 }

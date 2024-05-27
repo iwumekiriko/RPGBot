@@ -12,7 +12,7 @@ public partial class RPGBotEntities : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Player> Players { get; set; }
     public virtual DbSet<Enemy> Enemies { get; set; }
-    public virtual DbSet<Inventory> Inventory { get; set; }
+    public virtual DbSet<InventoryItem> Inventory { get; set; }
     public virtual DbSet<QuestBoardItem> QuestBoard { get; set; }
     public virtual DbSet<ImageCache> ImageCaches { get; set; }
 
@@ -28,7 +28,7 @@ public partial class RPGBotEntities : DbContext
         modelBuilder.Entity<Player>()
             .HasKey(p => new { p.UserId, p.GuildId });
 
-        modelBuilder.Entity<Inventory>()
+        modelBuilder.Entity<InventoryItem>()
             .HasKey(i => new { i.UserId, i.GuildId, i.ItemId });
 
         //modelBuilder.Entity<Item>()

@@ -4,24 +4,23 @@ using Discord.Interactions;
 using RPGBot.Database.Models;
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
-using RPGBot.Modules.Game.Services;
 using RPGBot.Data;
 using RPGBot.Utils.Embeds;
 using RPGBot.Utils.Paths;
 using System;
+using RPGBot.Modules.Game.Services;
 
 namespace RPGBot.Modules.Game;
 
 public class WelcomeModule(IServiceProvider services) : BaseModule(services)
 {
     private static GameClass playerClass;
-    private static int presentId;
+    private static Item playerPresent;
 
     [ComponentInteraction("nextButton")]
     public async Task NextHandler()
     {
-        await SetPhase(1);
-
+        await SetStartPhase(1);
         var url = await _images.GetImageUrlAsync("Class.png");
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
@@ -42,16 +41,13 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("classSelectMenu")]
     public async Task ClassShowcase(string[] selections)
     {
-        var id = Convert.ToInt32(selections.First());
-        var gameClass = Classes.GetClasses()[id];
-        var url = await _images.GetImageUrlAsync($"{gameClass.Name}.png");
-        playerClass = gameClass;
-
+        playerClass = Classes.GetClasses()[int.Parse(selections.First())];
+        var url = await _images.GetImageUrlAsync($"{playerClass.Name}.png");
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new OnlyImageEmbed(url).Build();
-            message.Components = new ClassChoiceComponent(id).Build();
+            message.Components = new ClassChoiceComponent(true).Build();
         });
     }
     [ComponentInteraction("submitClassButton")]
@@ -59,7 +55,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     {
         await SetClass();
         var url = await _images.GetImageUrlAsync("Present.png");
-        await Context.Interaction.DeferAsync();
+        await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new OnlyImageEmbed(url).Build();
@@ -69,22 +65,19 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("presentSelectMenu")]
     public async Task PresentChoiceHandler(string[] selections)
     {
-        var id = Int32.Parse(selections.First());
-        presentId = id;
-        var item = Items.GetItems()[id];
-        await Context.Interaction.DeferAsync();
+        playerPresent = Items.GetItems()[int.Parse(selections.First())];
+        await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ItemShowcaseEmbed(item).Build();
-            message.Components = new PresentChoiceComponent(presentId).Build();
+            message.Embed = new ItemShowcaseEmbed(playerPresent).Build();
+            message.Components = new PresentChoiceComponent(true).Build();
         });
     }
     [ComponentInteraction("submitPresentButton")]
     public async Task SubmitPresentButton()
     {
-        await SetPresent(presentId);
-
-        await Context.Interaction.DeferAsync();
+        await SetPresent();
+        await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = mainEmbed.Build();
@@ -94,35 +87,32 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     private async Task SetClass()
     {
         var player = await GetOrCreatePlayerAsync();
-        await SetPhase(2, player);
+        await SetStartPhase(2, player);
         CopyStats(player, playerClass);
-        await _database.SaveChangesAsync();
     }
-    private async Task SetPresent(int presentId)
+    private async Task SetPresent()
     {
         var player = await GetOrCreatePlayerAsync();
-        await SetPhase(3, player);
-
-        _database.Inventory.Where(
-            i => i.UserId == player.UserId &&
-                 i.GuildId == player.GuildId &&
-                 i.ItemId == presentId
-            ).First().Amount += 1;
+        await SetStartPhase(3, player);
+        _inventory.AddItemToInventory(
+            player.GuildId, player.UserId, playerPresent.Id
+        );
+    }
+    private async void CopyStats(Player player, GameClass gameClass)
+    {
+        player.ClassId = gameClass.Id;
+        player.CurrentHealth = gameClass.BaseHealth;
+        player.MaxHealth = gameClass.BaseHealth;
+        player.Armor = gameClass.Armor;
+        player.Strength = gameClass.Strength;
+        player.Dexterity = gameClass.Dexterity;
+        player.Intellect = gameClass.Intellect;
+        player.Memory = gameClass.Memory;
+        player.Conviction = gameClass.Conviction;
 
         await _database.SaveChangesAsync();
     }
-    private static void CopyStats(Player player, GameClass gameClass)
-    {
-        player.ClassId = gameClass.Id;
-        player.Health = gameClass.Health.Value;
-        player.Armor = gameClass.Armor.Value;
-        player.Strength = gameClass.Strength.Value;
-        player.Dexterity = gameClass.Dexterity.Value;
-        player.Intellect = gameClass.Intellect.Value;
-        player.Memory = gameClass.Memory.Value;
-        player.Conviction = gameClass.Conviction.Value;
-    }
-    private async Task SetPhase(int phase, Player? player = null)
+    private async Task SetStartPhase(int phase, Player? player = null)
     {
         player ??= await GetOrCreatePlayerAsync();
         player.StartPhase = phase;

@@ -1,8 +1,8 @@
 ﻿using Discord.Interactions;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface;
-using RPGBot.Modules.Game.Services;
 using RPGBot.Data;
+using RPGBot.Modules.Game.Services;
 
 namespace RPGBot.Modules.Game;
 

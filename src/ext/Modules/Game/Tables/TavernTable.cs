@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface;
 using RPGBot.Database.Models;
-using RPGBot.Modules.Game.Services;
 using RPGBot.Data;
-    
+using RPGBot.Modules.Game.Services;
+
 namespace RPGBot.Modules.Game;
 
 public class TavernTable(IServiceProvider services) : BaseModule(services)

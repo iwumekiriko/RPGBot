@@ -6,9 +6,9 @@ namespace RPGBot.UserInterface;
 
 public class ClassChoiceComponent : ComponentBuilder
 {
-    public ClassChoiceComponent(int classId = 0)
+    public ClassChoiceComponent(bool isSelected = false)
     {
         WithSelectMenu(new ClassSelectMenu());
-        if (classId != 0) WithButton(new SubmitClassButton());
+        if (isSelected) WithButton(new SubmitClassButton());
     }
 }

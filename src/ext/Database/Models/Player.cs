@@ -14,7 +14,9 @@ public partial class Player
 
     public int StartPhase { get; set; }
     public int ClassId { get; set; }
-    public int Health { get; set; }
+
+    public int CurrentHealth { get; set; }
+    public int MaxHealth { get; set; }
     public int Armor { get; set; }
     public int Strength { get; set; }
     public int Dexterity { get; set; }

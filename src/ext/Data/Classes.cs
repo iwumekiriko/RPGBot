@@ -1,7 +1,4 @@
-﻿using System.Net.Http.Headers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
-namespace RPGBot.Data;
+﻿namespace RPGBot.Data;
 
 public class Classes
 {
@@ -14,40 +11,37 @@ public class Classes
             {
                 Id = 101,
                 Name = "Warrior",
-                Health = new Health { Value = 20 },
-                Armor = new Armor { Value = 5 },
-                Strength = new Strength { Value = 13 },
-                Dexterity = new Dexterity { Value = 9 }, 
-                Intellect = new Intellect { Value = 8 },
-                Memory = new Memory { Value = 3 },
-                Conviction = new Conviction { Value = 1 },
-                PhotoLink = "https://imgur.com/kgeTFhq.png"
+                BaseHealth = 20,
+                Armor = 5,
+                Strength = 13,
+                Dexterity = 9, 
+                Intellect = 8,
+                Memory = 3,
+                Conviction = 1,
             },
             [102] = new GameClass
             { 
                 Id = 102,
                 Name = "Hunter",
-                Health = new Health { Value = 20 },
-                Armor = new Armor { Value = 5 },
-                Strength = new Strength { Value = 8 },
-                Dexterity = new Dexterity { Value = 13 },
-                Intellect = new Intellect { Value = 9 },
-                Memory = new Memory { Value = 3 },
-                Conviction = new Conviction { Value = 1 },
-                PhotoLink = "https://imgur.com/qyYZeML.png"
+                BaseHealth = 20,
+                Armor = 5,
+                Strength = 8,
+                Dexterity = 13,
+                Intellect = 9,
+                Memory = 3,
+                Conviction = 1,
             },
             [103] = new GameClass
             { 
                 Id = 101,
                 Name = "Mage",
-                Health = new Health { Value = 20 },
-                Armor = new Armor { Value = 5 },
-                Strength = new Strength { Value = 9 },
-                Dexterity = new Dexterity { Value = 8 },
-                Intellect = new Intellect { Value = 13 },
-                Memory = new Memory { Value = 3 },
-                Conviction = new Conviction { Value = 1 },
-                PhotoLink = "https://imgur.com/kgeTFhq.png"
+                BaseHealth = 20,
+                Armor = 5,
+                Strength = 9,
+                Dexterity = 8,
+                Intellect = 13,
+                Memory = 3,
+                Conviction = 1,
             },
         };
 
@@ -58,12 +52,11 @@ public class GameClass
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public Health Health { get; set; }
-    public Armor Armor { get; set; }
-    public Strength Strength { get; set; }
-    public Dexterity Dexterity { get; set; }
-    public Intellect Intellect { get; set; }
-    public Memory Memory { get; set; }
-    public Conviction Conviction { get; set; }
-    public string PhotoLink { get; set; }
+    public int BaseHealth { get; set; }
+    public int Armor { get; set; }
+    public int Strength { get; set; }
+    public int Dexterity { get; set; }
+    public int Intellect { get; set; }
+    public int Memory { get; set; }
+    public int Conviction { get; set; }
 }

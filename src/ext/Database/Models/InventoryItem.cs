@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RPGBot.Database.Models;
-public partial class Inventory
+public partial class InventoryItem
 {
     public ulong UserId { get; set; }
     [ForeignKey("UserId")]

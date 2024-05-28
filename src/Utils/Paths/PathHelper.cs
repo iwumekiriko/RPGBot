@@ -15,15 +15,5 @@
             => Directory.GetFiles(BasePath, "*.png", SearchOption.AllDirectories);
         public static string GetImagePath(string subPath)
             => Path.Combine(BasePath, subPath);
-        public static string GetClassesPath(string fileName)
-        {
-            var classesPath = Path.Combine(BasePath, "Welcome", "Classes");
-            return Path.Combine(classesPath, fileName);
-        }
-        public static string GetGreetingsPath(string fileName)
-        {
-            var welcomePath = Path.Combine(BasePath, "Welcome", "Greetings");
-            return Path.Combine(welcomePath, fileName);
-        }
     }
 }

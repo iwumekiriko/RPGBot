@@ -84,7 +84,7 @@ public class StartupService
             var imageUpload = await imageEndpoint.UploadImageAsync(fileStream);
             var uploadedImage = new ImageCache() 
             { 
-                ImageName = Path.GetFileName(filePath),
+                ImageName = Path.GetFileNameWithoutExtension(filePath),
                 ImageUrl = imageUpload.Link 
             };
             _database.ImageCaches.Add(uploadedImage);

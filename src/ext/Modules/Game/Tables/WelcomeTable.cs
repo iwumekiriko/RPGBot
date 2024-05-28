@@ -1,13 +1,10 @@
-﻿using Discord;
-using Discord.Interactions;
+﻿using Discord.Interactions;
 
 using RPGBot.Database.Models;
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.Data;
 using RPGBot.Utils.Embeds;
-using RPGBot.Utils.Paths;
-using System;
 using RPGBot.Modules.Game.Services;
 
 namespace RPGBot.Modules.Game;
@@ -21,7 +18,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     public async Task NextHandler()
     {
         await SetStartPhase(1);
-        var url = await _images.GetImageUrlAsync("Class.png");
+        var url = await _images.GetImageUrlAsync("Class");
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
@@ -42,7 +39,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     public async Task ClassShowcase(string[] selections)
     {
         playerClass = Classes.GetClasses()[int.Parse(selections.First())];
-        var url = await _images.GetImageUrlAsync($"{playerClass.Name}.png");
+        var url = await _images.GetImageUrlAsync($"{playerClass.Name}");
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
@@ -54,7 +51,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     public async Task SubmitClassButton()
     {
         await SetClass();
-        var url = await _images.GetImageUrlAsync("Present.png");
+        var url = await _images.GetImageUrlAsync("Present");
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
@@ -95,7 +92,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         var player = await GetOrCreatePlayerAsync();
         await SetStartPhase(3, player);
         _inventory.AddItemToInventory(
-            player.GuildId, player.UserId, playerPresent.Id
+            player, playerPresent.Id
         );
     }
     private async void CopyStats(Player player, GameClass gameClass)

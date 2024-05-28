@@ -19,9 +19,9 @@ public partial class GameModule(IServiceProvider services) : BaseModule(services
         var player = await GetOrCreatePlayerAsync();
         var (photoName, components) = player.StartPhase switch
         {
-            0 => ("Welcome.png", new WelcomeComponent()),
-            1 => ("Class.png", new ClassChoiceComponent()),
-            2 => ("Present.png", new PresentChoiceComponent()),
+            0 => ("Welcome", new WelcomeComponent()),
+            1 => ("Class", new ClassChoiceComponent()),
+            2 => ("Present", new PresentChoiceComponent()),
             3 => ("Main", mainComponent),
             _ => throw new InvalidDataException()
         };

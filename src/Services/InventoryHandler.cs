@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using RPGBot.Database.Models;
+using RPGBot.Data;
 
 namespace RPGBot.Services;
 
@@ -18,14 +19,61 @@ public class InventoryHandler
         _logger = logger;
         _database = database;
     }
-    public async void AddItemToInventory(ulong guildId, ulong userId, int itemId)
+    /// <summary>
+    /// Sets the amount of item in player's inventory to +1
+    /// </summary>
+    /// <param name="player">current user</param>
+    /// <param name="itemId">item's id</param>
+    public async void AddItemToInventory(Player player, int? itemId)
     {
+        if (itemId == null) return;
+
         _database.Inventory.Where(
-            i => i.GuildId == guildId &&
-                 i.UserId == userId &&
+            i => i.GuildId == player.GuildId &&
+                 i.UserId == player.UserId &&
                  i.ItemId == itemId
             ).First().Amount += 1;
 
         await _database.SaveChangesAsync();
     }
+    /// <summary>
+    /// Sets the amount of item in player's inventory to -1
+    /// </summary>
+    /// <param name="player">current user</param>
+    /// <param name="itemId">item's id</param>
+    public async void DropItemFromInventory(Player player, int? itemId)
+    {
+        if (itemId == null) return;
+
+        _database.Inventory.Where(
+        i => i.UserId == player.UserId &&
+             i.GuildId == player.GuildId &&
+             i.ItemId == itemId
+        ).First().Amount -= 1;
+        await _database.SaveChangesAsync();
+    }
+    /// <summary>
+    /// Compares database data with local data and makes Items Dictionary
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns>Dictionary with:<br/>Keys: Item<br/>Values: Item amount</returns>
+    public async Task<Dictionary<Item, int>> GetPlayerItems(Player player)
+    {
+        var items = Items.GetItems();
+        var playerItems = await _database.Inventory.Where(i => 
+                i.GuildId == player.GuildId &&
+                i.UserId == player.UserId &&
+                i.Amount != 0)
+            .Select(i => new { i.ItemId, i.Amount }).Take(25)
+            .ToDictionaryAsync(i => items[i.ItemId], i => i.Amount);
+
+        return playerItems;
+    }
+    /// <summary>
+    /// Shortcut for item selection
+    /// </summary>
+    /// <param name="itemId">item's id</param>
+    /// <returns>Item by id or null if there is no such id in data</returns>
+    public Item? GetItem(int itemId) 
+        => Items.GetItems()[itemId] ?? null;
 }

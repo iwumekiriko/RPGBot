@@ -1,7 +1,10 @@
 ﻿using Discord.Interactions;
+
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.Data;
+using RPGBot.Services;
+using System.Data;
 
 namespace RPGBot.Modules.Game;
 
@@ -13,9 +16,10 @@ public partial class GameModule
     public async Task ItemShowcase(string[] selections)
     {
         var itemId = Int32.Parse(selections.First());
+        var item = _inventory.GetItem(itemId) ??
+            throw new InvalidDataException();
         CurrentItemId = itemId;
-        var item = Items.GetItems()[itemId];
-        await Context.Interaction.DeferAsync();
+        await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new ItemShowcaseEmbed(item).Build();
@@ -25,16 +29,9 @@ public partial class GameModule
     [ComponentInteraction("inventoryBackButton")]
     public async Task InventoryBack()
     {
-        var items = Items.GetItems();
-
-        var playerItems = _database.Inventory
-            .Where(i => i.UserId == Context.User.Id &&
-                        i.GuildId == Context.Guild.Id &&
-                        i.Amount != 0)
-            .Select(i => new { i.ItemId, i.Amount })
-            .ToDictionary(i => items[i.ItemId], i => i.Amount);
-
-        await Context.Interaction.DeferAsync();
+        var player = await GetOrCreatePlayerAsync();
+        var playerItems = await _inventory.GetPlayerItems(player);
+        await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new InventoryEmbed(playerItems).Build();
@@ -44,13 +41,9 @@ public partial class GameModule
     [ComponentInteraction("dropItemButton")]
     public async Task DropItem()
     {
-        _database.Inventory.Where(
-        i => i.UserId == Context.User.Id &&
-             i.GuildId == Context.Guild.Id &&
-             i.ItemId == CurrentItemId
-        ).First().Amount -= 1;
-        await _database.SaveChangesAsync();
+        var player = await GetOrCreatePlayerAsync();
+        _inventory.DropItemFromInventory(player, CurrentItemId);
         await DeferAsync();
-        await Context.Interaction.DeleteOriginalResponseAsync();
+        await DeleteOriginalResponseAsync();
     }
 }

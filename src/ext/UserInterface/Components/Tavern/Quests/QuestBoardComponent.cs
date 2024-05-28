@@ -6,6 +6,6 @@ namespace RPGBot.UserInterface;
 
 public class QuestBoardComponent : ComponentBuilder
 {
-    public QuestBoardComponent(Dictionary<Quest, bool> quests)
+    public QuestBoardComponent(List<Quest> quests)
         => WithSelectMenu(new QuestBoardSelectMenu(quests));
 }

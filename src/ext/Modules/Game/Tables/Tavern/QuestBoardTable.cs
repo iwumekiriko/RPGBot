@@ -1,9 +1,9 @@
 ﻿using Discord.Interactions;
 using Microsoft.EntityFrameworkCore;
+
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.Data;
-using RPGBot.Database.Models;
 
 namespace RPGBot.Modules.Game;
 
@@ -14,38 +14,24 @@ public partial class GameModule
     [ComponentInteraction("questBoardSelectMenu")]
     public async Task QuestShowcase(string[] selections)
     {
+        var player = await GetOrCreatePlayerAsync();
         var questId = Int32.Parse(selections.First());
+        var questInfo = await _questBoard.GetQuestInfo(
+            player, questId
+        );
         CurrentQuestId = questId;
-        var isStarted = _database.QuestBoard
-            .Where(q => q.UserId == Context.User.Id &&
-                        q.GuildId == Context.Guild.Id &&
-                        q.QuestId == questId)
-            .Select(q => q.IsStarted)
-            .First();
-
-        var quest = Quests.GetQuests()[questId];
-
-        await _database.SaveChangesAsync();
-
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new QuestShowcaseEmbed(quest).Build();
-            message.Components = new QuestShowcaseComponent(isStarted).Build();
+            message.Embed = new QuestShowcaseEmbed(questInfo.Key).Build();
+            message.Components = new QuestShowcaseComponent(questInfo.Value.Item2).Build();
         });
     }
     [ComponentInteraction("questBoardBackButton")]
     public async Task QuestBoardBack()
     {
-        var quests = Quests.GetQuests();
-
-        var playerQuests = _database.QuestBoard
-            .Where(i => i.UserId == Context.User.Id &&
-                        i.GuildId == Context.Guild.Id &&
-                        !i.IsFinished)
-            .Select(i => new { i.QuestId, i.IsStarted })
-            .ToDictionary(i => quests[i.QuestId], i => i.IsStarted);
-
+        var player = await GetOrCreatePlayerAsync();
+        var playerQuests = await _questBoard.GetPlayerQuests(player);
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
@@ -56,16 +42,12 @@ public partial class GameModule
     [ComponentInteraction("takeQuestButton")]
     public async Task TakeQuest()
     {
-        var quest = Quests.GetQuests()[CurrentQuestId] ;
-        if (quest == null) return;
-        
-        var questRef = _database.QuestBoard.Where(
-            q => q.UserId == Context.User.Id &&
-            q.GuildId == Context.Guild.Id &&
-            q.QuestId == quest.Id).First();
-        questRef.IsStarted = true;
-        await _database.SaveChangesAsync();
-
+        var player = await GetOrCreatePlayerAsync();
+        var quest = _questBoard.GetQuest(CurrentQuestId) ??
+            throw new InvalidDataException();
+        _questBoard.StartQuest(
+            player, quest.Id
+        );
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
@@ -76,44 +58,10 @@ public partial class GameModule
     [ComponentInteraction("completeQuestButton")]
     public async Task CompleteQuest()
     {
-        var quest = Quests.GetQuests()[CurrentQuestId];
-        var guild = await _database.Guilds.FindAsync(Context.Guild.Id);
-        var user = await _database.Users.FindAsync(Context.User.Id);
-        var player = await _database.Players.FirstOrDefaultAsync(p => p.Guild == guild && p.User == user);
-        if (guild == null || user == null || player == null || quest == null) return;
-
-        var questRef = _database.QuestBoard
-            .Where(q => q.UserId == user.Id &&
-                        q.GuildId == guild.Id &&
-                        q.QuestId == quest.Id).First();
-
-        if (questRef.Progress >= quest.NeededToComplete)
+        var player = await GetOrCreatePlayerAsync();            
+        if (await _questBoard.AcceptFinishQuest(player, CurrentQuestId))
         {
-            if (quest.ItemId != null)
-            {
-                _database.Inventory.Where
-                    (i => i.User == user &&
-                     i.Guild == guild &&
-                     i.ItemId == quest.ItemId)
-                .First().Amount += 1;
-            }
-            if (quest.MoneyReward > 0)
-            {
-                player.Money += quest.MoneyReward;
-            }
-            player.Experience += quest.ExpReward;
-            questRef.IsFinished = true;
-            await _database.SaveChangesAsync();
-
-            var quests = Quests.GetQuests();
-
-            var playerQuests = _database.QuestBoard
-                .Where(i => i.UserId == Context.User.Id &&
-                            i.GuildId == Context.Guild.Id &&
-                            !i.IsFinished)
-                .Select(i => new { i.QuestId, i.IsStarted })
-                .ToDictionary(i => quests[i.QuestId], i => i.IsStarted);
-
+            var playerQuests = await _questBoard.GetPlayerQuests(player);
             await DeferAsync();
             await ModifyOriginalResponseAsync(message =>
             {
@@ -123,7 +71,7 @@ public partial class GameModule
         }
         else
         {
-            await RespondAsync("Условия квеста не выполнены", ephemeral: true);
+            await RespondAsync("You can't complete quest now", ephemeral: true);
         }
     }
 }

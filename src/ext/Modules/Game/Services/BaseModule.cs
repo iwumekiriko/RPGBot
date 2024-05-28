@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
-using RPGBot.Services;
+using RPGBot.Data;
 using RPGBot.Database.Models;
 using RPGBot.Database;
-using RPGBot.UserInterface.Embeds;
+using RPGBot.Services;
 using RPGBot.UserInterface;
-using RPGBot.Data;
+using RPGBot.UserInterface.Embeds;
 
 
 namespace RPGBot.Modules.Game.Services;
@@ -23,6 +23,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     public readonly RPGBotEntities _database;
     public readonly ImagesHandler _images;
     public readonly InventoryHandler _inventory;
+    public readonly QuestBoardHandler _questBoard;
 
     public static readonly EmbedBuilder mainEmbed = new MainTableEmbed();
     public static readonly ComponentBuilder mainComponent = new MainTableComponent();
@@ -34,6 +35,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
         _database = services.GetRequiredService<RPGBotEntities>();
         _images = services.GetRequiredService<ImagesHandler>();
         _inventory = services.GetRequiredService<InventoryHandler>();
+        _questBoard = services.GetRequiredService<QuestBoardHandler>();
     }
     public async Task<Player> GetOrCreatePlayerAsync()
     {
@@ -47,7 +49,8 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
             await CreateUserData(player.Guild, player.User);
             _database.SaveChanges();
             _logger.LogInformation(
-                "New player with id: {playerId} has started the game on guild {guildId}", user.Id, guild.Id
+                "New player with id: {playerId} has started the game on guild {guildId}",
+                user.Id, guild.Id
             );
         }
         return player;
@@ -62,26 +65,22 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     {
         var items = Items.GetItems();
         foreach (var item in items)
-        {
             _database.Inventory.Add(new InventoryItem
             {
                 User = user,
                 Guild = guild,
                 ItemId = item.Key
             });
-        }
     }
     private void AddUserQuests(Guild guild, User user)
     {
         var quests = Quests.GetQuests();
         foreach (var quest in quests)
-        {
             _database.QuestBoard.Add(new QuestBoardItem
             {
                 User = user,
                 Guild = guild,
                 QuestId = quest.Key
             });
-        }
     }
 }

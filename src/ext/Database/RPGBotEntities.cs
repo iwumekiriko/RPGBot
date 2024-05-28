@@ -31,9 +31,6 @@ public partial class RPGBotEntities : DbContext
         modelBuilder.Entity<InventoryItem>()
             .HasKey(i => new { i.UserId, i.GuildId, i.ItemId });
 
-        //modelBuilder.Entity<Item>()
-        //    .HasDiscriminator(i => i.Type);
-
         modelBuilder.Entity<QuestBoardItem>()
             .HasKey(i => new { i.UserId, i.GuildId, i.QuestId });
     }

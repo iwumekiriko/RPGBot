@@ -18,10 +18,19 @@ public class ImagesHandler
         _logger = logger;
         _database = database;
     }
+    /// <summary>
+    /// Get all stored image caches in database
+    /// </summary>
+    /// <returns>List of ImageCache's</returns>
     public async Task<List<ImageCache>> GetCachedImagesAsync()
     {
         return await _database.ImageCaches.ToListAsync();
     }
+    /// <summary>
+    /// Gets the concrete ImageUrl from database by ImageName
+    /// </summary>
+    /// <param name="imageName">ImageName from ImageCache or just string</param>
+    /// <returns>ImageUrl</returns>
     public string GetImageUrl(string imageName)
     {
         return _database.ImageCaches
@@ -29,6 +38,11 @@ public class ImagesHandler
             .Select(i => i.ImageUrl)
             .First();
     }
+    /// <summary>
+    /// Gets the concrete ImageUrl from database by ImageName asynchronously
+    /// </summary>
+    /// <param name="imageName">ImageName from ImageCache or just string</param>
+    /// <returns>ImageUrl</returns>
     public async Task<string> GetImageUrlAsync(string imageName)
     {
         return await _database.ImageCaches

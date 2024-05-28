@@ -24,7 +24,6 @@ public class RPGBot
         GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers,
         AlwaysDownloadUsers = true,
     };
-
     private static readonly InteractionServiceConfig _interactionServiceConfig = new()
     {
         LocalizationManager = new ResxLocalizationManager(
@@ -32,7 +31,6 @@ public class RPGBot
             new CultureInfo("en-US")
         )
     };
-
     private static async Task Main(string[] args)
     {
         _configuration = new ConfigurationBuilder()
@@ -55,6 +53,7 @@ public class RPGBot
             .AddSingleton<StartupService>()
             .AddSingleton<ImagesHandler>()
             .AddSingleton<InventoryHandler>()
+            .AddSingleton<QuestBoardHandler>()
             .AddSingleton<LoggingService>();
 
         ConfigureServices(services);

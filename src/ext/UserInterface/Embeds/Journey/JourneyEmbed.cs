@@ -2,11 +2,11 @@
 
 namespace RPGBot.UserInterface.Embeds;
 
-public class MainTableEmbed : DefaultEmbed
+public class JourneyEmbed : DefaultEmbed
 {
-    public MainTableEmbed()
+    public JourneyEmbed()
     {
-        Title = "Feinrof";
+        Title = "Journey";
         ImageUrl = "https://imgur.com/eYhbbYJ.png";
     }
 }

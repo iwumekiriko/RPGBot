@@ -5,8 +5,8 @@ namespace RPGBot.Modules.Game;
 
 public class JourneyTable(IServiceProvider services) : BaseModule(services)
 {
-    [ComponentInteraction("journeyButton")]
-    public async Task JourneyHandler()
+    [ComponentInteraction("exploreButton")]
+    public async Task exploreHandler()
     {
 
     }

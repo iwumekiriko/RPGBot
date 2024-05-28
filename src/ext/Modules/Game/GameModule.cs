@@ -22,14 +22,17 @@ public partial class GameModule(IServiceProvider services) : BaseModule(services
             0 => ("Welcome.png", new WelcomeComponent()),
             1 => ("Class.png", new ClassChoiceComponent()),
             2 => ("Present.png", new PresentChoiceComponent()),
-            3 => ("Welcome.png", mainComponents), //Main.png
+            3 => ("Main", mainComponent),
             _ => throw new InvalidDataException()
         };
-        var imageUrl = await _images.GetImageUrlAsync(photoName);
+        var embed = photoName == "Main" ?
+            mainEmbed : new OnlyImageEmbed(
+                await _images.GetImageUrlAsync(photoName)
+            );
         await ModifyOriginalResponseAsync(message =>
         {
             message.Content = null;
-            message.Embed = new OnlyImageEmbed(imageUrl).Build();
+            message.Embed = embed.Build();
             message.Components = components.Build();
         });
     }

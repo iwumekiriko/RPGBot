@@ -25,7 +25,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     public readonly InventoryHandler _inventory;
 
     public static readonly EmbedBuilder mainEmbed = new MainTableEmbed();
-    public static readonly ComponentBuilder mainComponents = new MainTableComponents();
+    public static readonly ComponentBuilder mainComponent = new MainTableComponent();
 
     public BaseModule(IServiceProvider services)
     {

@@ -1,7 +1,6 @@
 ﻿using Discord;
 
 namespace RPGBot.UserInterface.Buttons;
-
 public class CompleteQuestButton : ButtonBuilder
 {
     public CompleteQuestButton()

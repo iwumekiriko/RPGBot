@@ -51,6 +51,18 @@ public class InteractionHandler
         try
         {
             var context = new SocketInteractionContext(_client, interaction);
+
+            //if (interaction is SocketMessageComponent component)
+            //{
+            //    var message = component.Message;
+                
+            //    if (message.Interaction.User.Id != context.User.Id)
+            //    {
+            //        await context.Interaction.RespondAsync($"Wrong User", ephemeral: true);
+            //        return;
+            //    }
+            //} На будущее
+            
             var result = await _handler.ExecuteCommandAsync(context, _services);
             if (!result.IsSuccess)
                 switch (result.Error)

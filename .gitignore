@@ -29,3 +29,6 @@ Migrations/
 
 #Ignore sln file
 *.sln
+
+#Ignore .csproj file
+*.csproj

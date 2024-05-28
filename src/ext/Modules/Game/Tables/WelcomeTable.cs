@@ -81,7 +81,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = mainEmbed.Build();
-            message.Components = mainComponents.Build();
+            message.Components = mainComponent.Build();
         });
     }
     private async Task SetClass()
@@ -109,7 +109,6 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         player.Intellect = gameClass.Intellect;
         player.Memory = gameClass.Memory;
         player.Conviction = gameClass.Conviction;
-
         await _database.SaveChangesAsync();
     }
     private async Task SetStartPhase(int phase, Player? player = null)

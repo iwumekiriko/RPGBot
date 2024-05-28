@@ -25,12 +25,12 @@ public class Cooldown : PreconditionAttribute
     public struct CooldownInfo
     {
         public ulong UserId { get; }
-        public int commandHashCode { get; }
+        public int CommandHashCode { get; }
 
         public CooldownInfo(ulong userId, int interactionHashCode)
         {
             UserId = userId;
-            commandHashCode = interactionHashCode;
+            CommandHashCode = interactionHashCode;
         }
     }
         
@@ -42,7 +42,7 @@ public class Cooldown : PreconditionAttribute
         var cooldownData = _cooldowns.FirstOrDefault(c =>
         {
             return c.Key.UserId == context.User.Id &&
-            c.Key.commandHashCode == command.GetHashCode();
+            c.Key.CommandHashCode == command.GetHashCode();
         });
 
         if (cooldownData.Key.UserId != 0)

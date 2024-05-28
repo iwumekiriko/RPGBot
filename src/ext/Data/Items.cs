@@ -17,7 +17,9 @@ public class Items
                 Id = 201,
                 Name = "Sword",
                 Weight = 2.0,
-                Description = "Cool2 stuff",
+                Description = "A straight sword with a broad blade designed for slashing.\n\n" +
+                "A large sweeping attack makes this effective against crowds,\n" +
+                "but is prone to deflection from walls in narrow spaces.",
                 Damage = 2,
                 PhotoLink = "https://imgur.com/ejzLAcq.png"
             },
@@ -35,7 +37,7 @@ public class Items
                 Id = 203,
                 Name = "Ring",
                 Weight = 0.2,
-                Description = "Cool2",
+                Description = "A generations-old ring set with a small red jewel.",
                 PhotoLink = "https://imgur.com/ejzLAcq.png"
             },
             [204] = new Accessory

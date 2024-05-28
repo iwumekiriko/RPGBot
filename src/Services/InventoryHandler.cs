@@ -64,7 +64,8 @@ public class InventoryHandler
                 i.GuildId == player.GuildId &&
                 i.UserId == player.UserId &&
                 i.Amount != 0)
-            .Select(i => new { i.ItemId, i.Amount }).Take(25)
+            .Select(i => new { i.ItemId, i.Amount })
+            .OrderBy(i => i.Amount).Take(25)
             .ToDictionaryAsync(i => items[i.ItemId], i => i.Amount);
 
         return playerItems;

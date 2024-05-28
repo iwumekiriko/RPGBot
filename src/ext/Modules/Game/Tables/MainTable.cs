@@ -21,7 +21,6 @@ public class MainModule(IServiceProvider services) : BaseModule(services)
             message.Components = new ProfileComponent().Build();
         });
     }
-
     [ComponentInteraction("tavernButton")]
     public async Task TavernHandler()
     {
@@ -32,7 +31,6 @@ public class MainModule(IServiceProvider services) : BaseModule(services)
             message.Components = new TavernComponent().Build();
         });
     }
-
     [ComponentInteraction("journeyButton")]
     public async Task JourneyHandler()
     {
@@ -43,7 +41,6 @@ public class MainModule(IServiceProvider services) : BaseModule(services)
             message.Components = new JourneyComponent().Build();
         });
     }
-
     [ComponentInteraction("optionsButton")]
     public async Task OptionsHandler()
     {
@@ -54,7 +51,6 @@ public class MainModule(IServiceProvider services) : BaseModule(services)
             message.Components = new OptionsComponent().Build();
         });
     }
-
     [ComponentInteraction("backToMainButton")]
     public async Task BackToMain()
     {

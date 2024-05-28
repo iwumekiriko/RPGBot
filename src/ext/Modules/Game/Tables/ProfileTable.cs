@@ -9,6 +9,15 @@ namespace RPGBot.Modules.Game;
 
 public class ProfileTable(IServiceProvider services) : BaseModule(services)
 {
+    [ComponentInteraction("equipmentButton")]
+    public async Task EquipmentHandler()
+    {
+        await DeferAsync();
+        await FollowupAsync(
+            "Equipment",
+            ephemeral: true
+        );
+    }
     [ComponentInteraction("inventoryButton")]
     public async Task InventoryHandler()
     {
@@ -24,6 +33,10 @@ public class ProfileTable(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("journalButton")]
     public async Task JournalHandler()
     {
-
+        await DeferAsync();
+        await FollowupAsync(
+            "Journal",
+            ephemeral: true
+        );
     }
 }

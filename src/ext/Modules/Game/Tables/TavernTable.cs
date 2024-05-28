@@ -14,13 +14,21 @@ public class TavernTable(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("auctionButton")]
     public async Task AuctionHandler()
     {
-
+        await DeferAsync();
+        await FollowupAsync(
+            "Auction",
+            ephemeral: true
+        );
     }
 
     [ComponentInteraction("shopButton")]
     public async Task ShopHandler()
     {
-
+        await DeferAsync();
+        await FollowupAsync(
+            "Shop",
+            ephemeral: true
+        );
     }
 
     [ComponentInteraction("questBoardButton")]

@@ -53,7 +53,7 @@ public class InteractionHandler
         try
         {
             var context = new SocketInteractionContext(_client, interaction);
-            if (!await CheckForCorrectUser(context))
+            if (!CheckForCorrectUser(context))
             {
                 await context.Interaction.RespondAsync($"This game is not yours", ephemeral: true);
                 return;
@@ -77,7 +77,7 @@ public class InteractionHandler
                 await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
         }
     }
-    private async Task<bool> CheckForCorrectUser(SocketInteractionContext context)
+    private bool CheckForCorrectUser(SocketInteractionContext context)
     {
         if (context.Interaction is SocketMessageComponent component)
         {

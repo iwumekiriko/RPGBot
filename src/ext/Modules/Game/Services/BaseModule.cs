@@ -37,6 +37,10 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
         _inventory = services.GetRequiredService<InventoryHandler>();
         _questBoard = services.GetRequiredService<QuestBoardHandler>();
     }
+    /// <summary>
+    /// Returns player if it exists in database or creates a new one
+    /// </summary>
+    /// <returns>Player object from database models</returns>
     public async Task<Player> GetOrCreatePlayerAsync()
     {
         var guild = await _database.Guilds.FindAsync(Context.Guild.Id) ?? new Guild { Id = Context.Guild.Id };

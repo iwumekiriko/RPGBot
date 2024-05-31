@@ -26,7 +26,8 @@ public class TavernTable(IServiceProvider services) : BaseModule(services)
     {
         await DeferAsync();
         await FollowupAsync(
-            "Shop",
+            embed: new ShopEmbed().Build(),
+            components: new ShopComponent().Build(),
             ephemeral: true
         );
     }

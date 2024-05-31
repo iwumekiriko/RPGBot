@@ -1,13 +1,12 @@
 ﻿using Discord.Interactions;
-using Microsoft.EntityFrameworkCore;
 
 using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
-using RPGBot.Data;
+using RPGBot.Modules.Game.Services;
 
 namespace RPGBot.Modules.Game;
 
-public partial class GameModule
+public class QuestBoardTable(IServiceProvider services) : BaseModule(services)
 {
     private static int CurrentQuestId { get; set; }
 
@@ -27,7 +26,7 @@ public partial class GameModule
             message.Components = new QuestShowcaseComponent(questInfo.Value.Item2).Build();
         });
     }
-    [ComponentInteraction("questBoardBackButton")]
+    [ComponentInteraction("backToQuestBoardButton")]
     public async Task QuestBoardBack()
     {
         var player = await GetOrCreatePlayerAsync();

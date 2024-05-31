@@ -1,9 +1,11 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace RPGBot.Services;
 public class InteractionHandler
@@ -51,18 +53,12 @@ public class InteractionHandler
         try
         {
             var context = new SocketInteractionContext(_client, interaction);
-
-            //if (interaction is SocketMessageComponent component)
-            //{
-            //    var message = component.Message;
+            if (!CheckForCorrectUser(context))
+            {
+                await context.Interaction.RespondAsync($"This game is not yours", ephemeral: true);
+                return;
+            }
                 
-            //    if (message.Interaction.User.Id != context.User.Id)
-            //    {
-            //        await context.Interaction.RespondAsync($"Wrong User", ephemeral: true);
-            //        return;
-            //    }
-            //} На будущее
-            
             var result = await _handler.ExecuteCommandAsync(context, _services);
             if (!result.IsSuccess)
                 switch (result.Error)
@@ -80,6 +76,16 @@ public class InteractionHandler
             if (interaction.Type is InteractionType.ApplicationCommand)
                 await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
         }
+    }
+    private static bool CheckForCorrectUser(SocketInteractionContext context)
+    {
+        if (context.Interaction is SocketMessageComponent component)
+        {
+            var message = component.Message;
+            if (message.InteractionMetadata.OriginalResponseMessageId != null) return true;
+            if (message.Interaction.User.Id != context.User.Id) return false;
+        }
+        return true;
     }
     private async Task HandleInteractionExecute(ICommandInfo command, IInteractionContext context, IResult result)
     {

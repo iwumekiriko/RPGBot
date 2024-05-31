@@ -66,7 +66,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new ItemShowcaseEmbed(playerPresent).Build();
+            message.Embed = new InventoryItemShowcaseEmbed(playerPresent).Build();
             message.Components = new PresentChoiceComponent(true).Build();
         });
     }
@@ -91,7 +91,7 @@ public class WelcomeModule(IServiceProvider services) : BaseModule(services)
     {
         var player = await GetOrCreatePlayerAsync();
         await SetStartPhase(3, player);
-        _inventory.AddItemToInventory(
+        await _inventory.AddItemToInventory(
             player, playerPresent.Id
         );
     }

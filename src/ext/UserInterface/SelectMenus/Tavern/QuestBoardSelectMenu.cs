@@ -1,7 +1,7 @@
 ﻿using Discord;
 using RPGBot.Data;
 
-namespace RPGBot.UserInterface.SelectMenues;
+namespace RPGBot.UserInterface.SelectMenus;
 
 public class QuestBoardSelectMenu : SelectMenuBuilder
 {

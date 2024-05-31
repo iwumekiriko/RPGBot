@@ -21,6 +21,7 @@ Migrations/
 #Ignore vscode folders
 /.vscode/
 /.vs/
+.vs/
 
 #Ignore misc files
 *.dll

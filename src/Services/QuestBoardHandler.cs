@@ -39,6 +39,16 @@ public class QuestBoardHandler
             .Select(q => quests[q.QuestId])
             .ToListAsync();
     }
+    public async Task<List<Quest>> GetActivePlayerQuests(Player player)
+    {
+        var quests = Quests.GetQuests();
+        return await _database.QuestBoard.Where(q =>
+                q.GuildId == player.GuildId &&
+                q.UserId == player.UserId &&
+                q.IsStarted)
+            .Select(q => quests[q.QuestId])
+            .ToListAsync();
+    }
     /// <summary>
     /// Shortcut for quest selection
     /// </summary>

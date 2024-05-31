@@ -16,7 +16,7 @@ public class JournalTable(IServiceProvider services) : BaseModule(services)
     public async Task NotesHandler()
     {
         var player = await GetOrCreatePlayerAsync();
-        var playerQuests = await _questBoard.GetActivePlayerQuests(player);
+        var playerQuests = await _questBoard.GetStartedPlayerQuests(player);
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {

@@ -39,7 +39,7 @@ public class QuestBoardHandler
             .Select(q => quests[q.QuestId])
             .ToListAsync();
     }
-    public async Task<List<Quest>> GetActivePlayerQuests(Player player)
+    public async Task<List<Quest>> GetStartedPlayerQuests(Player player)
     {
         var quests = Quests.GetQuests();
         return await _database.QuestBoard.Where(q =>
@@ -54,7 +54,7 @@ public class QuestBoardHandler
     /// </summary>
     /// <param name="questId">quest's id</param>
     /// <returns>Quest by id or null if there is no such id in data</returns>
-    public Quest? GetQuest(int questId)
+    public static Quest? GetQuest(int questId)
         => Quests.GetQuests()[questId] ?? null;
     /// <summary>
     /// Compares data from database with local data to make QuestInfo

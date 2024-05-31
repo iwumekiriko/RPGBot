@@ -2,12 +2,12 @@
 
 namespace RPGBot.UserInterface.Buttons;
 
-public class NotesBackButton : ButtonBuilder
+public class BackToNotesButton : ButtonBuilder
 {
-    public NotesBackButton()
+    public BackToNotesButton()
     {
         Label = "Back";
         Style = ButtonStyle.Secondary;
-        CustomId = "notesBackButton";
+        CustomId = "backToNotesButton";
     }
 }

@@ -6,7 +6,7 @@ public class BackToShopButton : ButtonBuilder
 {
     public BackToShopButton()
     {
-        Label = "Back to shop";
+        Label = "Back";
         Style = ButtonStyle.Secondary;
         CustomId = "backToShopButton";
     }

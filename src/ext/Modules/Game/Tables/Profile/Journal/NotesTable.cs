@@ -42,11 +42,11 @@ public class NotesTable(IServiceProvider services) : BaseModule(services)
         });
     }
 
-    [ComponentInteraction("notesBackButton")]
+    [ComponentInteraction("backToNotesButton")]
     public async Task NotesBackButton()
     {
         var player = await GetOrCreatePlayerAsync();
-        var playerQuests = await _questBoard.GetActivePlayerQuests(player);
+        var playerQuests = await _questBoard.GetStartedPlayerQuests(player);
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {

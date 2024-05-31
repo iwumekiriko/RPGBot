@@ -54,6 +54,7 @@ public partial class GameModule
             message.Embed = new QuestShowcaseEmbed(quest).Build();
             message.Components = new QuestShowcaseComponent(true).Build();
         });
+        await RespondAsync("You can't complete quest now", ephemeral: true);
     }
     [ComponentInteraction("completeQuestButton")]
     public async Task CompleteQuest()

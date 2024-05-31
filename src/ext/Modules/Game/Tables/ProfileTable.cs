@@ -35,7 +35,8 @@ public class ProfileTable(IServiceProvider services) : BaseModule(services)
     {
         await DeferAsync();
         await FollowupAsync(
-            "Journal",
+            embed: new JournalEmbed().Build(),
+            components: new JournalComponent().Build(),
             ephemeral: true
         );
     }

@@ -24,6 +24,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     public readonly ImagesHandler _images;
     public readonly InventoryHandler _inventory;
     public readonly QuestBoardHandler _questBoard;
+    public readonly ShopHandler _shop;
 
     public static readonly EmbedBuilder mainEmbed = new MainTableEmbed();
     public static readonly ComponentBuilder mainComponent = new MainTableComponent();
@@ -36,6 +37,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
         _images = services.GetRequiredService<ImagesHandler>();
         _inventory = services.GetRequiredService<InventoryHandler>();
         _questBoard = services.GetRequiredService<QuestBoardHandler>();
+        _shop = services.GetRequiredService<ShopHandler>();
     }
     /// <summary>
     /// Returns player if it exists in database or creates a new one

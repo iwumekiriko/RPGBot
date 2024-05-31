@@ -113,7 +113,7 @@ public class QuestBoardHandler
         {
             if (quest.ItemId != null)
             {
-                _inventory.AddItemToInventory(
+                await _inventory.AddItemToInventory(
                     player, quest.ItemId
                 );
             }

@@ -77,7 +77,7 @@ public class InteractionHandler
                 await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
         }
     }
-    private bool CheckForCorrectUser(SocketInteractionContext context)
+    private static bool CheckForCorrectUser(SocketInteractionContext context)
     {
         if (context.Interaction is SocketMessageComponent component)
         {

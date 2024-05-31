@@ -4,9 +4,9 @@ using static System.Net.WebRequestMethods;
 
 namespace RPGBot.UserInterface.Embeds;
 
-public class ItemShowcaseEmbed : DefaultEmbed
+public class ShopItemShowcaseEmbed : DefaultEmbed
 {
-    public ItemShowcaseEmbed(Item item)
+    public ShopItemShowcaseEmbed(Item item)
     {
         Title = item.Name;
         ThumbnailUrl = "https://imgur.com/6hQ041d.png";

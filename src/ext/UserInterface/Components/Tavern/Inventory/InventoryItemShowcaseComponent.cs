@@ -3,10 +3,10 @@ using RPGBot.UserInterface.Buttons;
 
 namespace RPGBot.UserInterface;
 
-public class ItemShowcaseComponent : ComponentBuilder
+public class InventoryItemShowcaseComponent : ComponentBuilder
 {
-    public ItemShowcaseComponent()
+    public InventoryItemShowcaseComponent()
         => WithButton(new UseItemButton())
           .WithButton(new DropItemButton())
-          .WithButton(new InventoryBackButton());
+          .WithButton(new BackToInventoryButton());
 }

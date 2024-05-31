@@ -8,6 +8,7 @@ public class Items
 {
     private static Dictionary<int, Item> _items;
     private static readonly List<int> _presentIds = [201, 202, 203, 204];
+    private static readonly List<int> _shopItemsIds = [201, 202, 203, 204];
     public static Dictionary<int, Item> GetItems()
     {
         _items ??= new Dictionary<int, Item>()
@@ -16,6 +17,7 @@ public class Items
             {
                 Id = 201,
                 Name = "Sword",
+                Cost = 10,
                 Weight = 2.0,
                 Description = "A straight sword with a broad blade designed for slashing.\n\n" +
                 "A large sweeping attack makes this effective against crowds,\n" +
@@ -27,6 +29,7 @@ public class Items
             {
                 Id = 202,
                 Name = "Knife",
+                Cost = 10,
                 Weight = 1.0,
                 Description = "Cool stuff",
                 Damage = 1,
@@ -36,6 +39,7 @@ public class Items
             {
                 Id = 203,
                 Name = "Ring",
+                Cost = 10,
                 Weight = 0.2,
                 Description = "A generations-old ring set with a small red jewel.",
                 PhotoLink = "https://imgur.com/ejzLAcq.png"
@@ -44,6 +48,7 @@ public class Items
             {
                 Id = 204,
                 Name = "Scroll",
+                Cost = 10,
                 Weight = 0.1,
                 Description = "Cool212313",
                 PhotoLink = "https://imgur.com/ejzLAcq.png"
@@ -255,6 +260,10 @@ public class Items
     {
         return GetItems().Where(i => _presentIds.Contains(i.Key)).Select(i => i.Value).ToList();
     }
+    public static List<Item> GetShopItems()
+    {
+        return GetItems().Where(i => _shopItemsIds.Contains(i.Key)).Select(i => i.Value).ToList();
+    }
 }
 public class Weapon : Item
 {
@@ -269,6 +278,7 @@ public abstract class Item
 {
     public int Id { get; set; }
     public required string Name { get; set; }
+    public int Cost { get; set; }
     public abstract int MaxInStack { get; }
     public double Weight { get; set; }
     public required string Description { get; set; }

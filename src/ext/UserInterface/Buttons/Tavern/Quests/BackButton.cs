@@ -2,12 +2,12 @@
 
 namespace RPGBot.UserInterface.Buttons;
 
-public class QuestBoardBackButton : ButtonBuilder
+public class BackToQuestBoardButton : ButtonBuilder
 {
-    public QuestBoardBackButton()
+    public BackToQuestBoardButton()
     {
-        Label = "Back";
+        Label = "Back to quest board";
         Style = ButtonStyle.Primary;
-        CustomId = "questBoardBackButton";
+        CustomId = "backToQuestBoardButton";
     }
 }

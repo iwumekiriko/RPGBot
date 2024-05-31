@@ -24,7 +24,7 @@ public class InventoryHandler
     /// </summary>
     /// <param name="player">current user</param>
     /// <param name="itemId">item's id</param>
-    public async void AddItemToInventory(Player player, int? itemId)
+    public async Task AddItemToInventory(Player player, int? itemId)
     {
         if (itemId == null) return;
 
@@ -41,7 +41,7 @@ public class InventoryHandler
     /// </summary>
     /// <param name="player">current user</param>
     /// <param name="itemId">item's id</param>
-    public async void DropItemFromInventory(Player player, int? itemId)
+    public async Task DropItemFromInventory(Player player, int? itemId)
     {
         if (itemId == null) return;
 

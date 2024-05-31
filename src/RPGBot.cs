@@ -54,6 +54,7 @@ public class RPGBot
             .AddSingleton<ImagesHandler>()
             .AddSingleton<InventoryHandler>()
             .AddSingleton<QuestBoardHandler>()
+            .AddSingleton<ShopHandler>()
             .AddSingleton<LoggingService>();
 
         ConfigureServices(services);

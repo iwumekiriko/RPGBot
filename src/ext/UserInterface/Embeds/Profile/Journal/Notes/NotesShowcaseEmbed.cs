@@ -6,7 +6,7 @@ namespace RPGBot.UserInterface.Embeds;
 
 public class NotesShowcaseEmbed : DefaultEmbed
 {
-    public NotesShowcaseEmbed(Quest quest)
+    public NotesShowcaseEmbed(Quest quest, int questProgress, bool isFinished)
     {
         var sb = new StringBuilder();
         sb.Append($"**Required level: **{quest.RequiredLevel}\n");
@@ -16,7 +16,12 @@ public class NotesShowcaseEmbed : DefaultEmbed
         if (quest.MoneyReward != 0)
             sb.Append($"**Money reward: **{quest.MoneyReward}\n");
         sb.Append($"**Experience reward: **{quest.ExpReward}\n");
-        sb.Append($"**Status: **\n\n");
+        if (isFinished)
+            sb.Append($"**Status: **Finished\n\n");
+        else if (questProgress == quest.NeededToComplete)
+            sb.Append($"**Status: **Completed\n\n");
+        else
+            sb.Append($"**Status: **In progress ({questProgress}/{quest.NeededToComplete})\n\n");
         sb.Append($"**Description:**\n{quest.FullDescription}");
 
         Title = quest.Name;

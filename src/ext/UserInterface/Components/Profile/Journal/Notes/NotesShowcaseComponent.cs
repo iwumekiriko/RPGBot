@@ -6,5 +6,5 @@ namespace RPGBot.UserInterface;
 public class NotesShowcaseComponent : ComponentBuilder
 {
     public NotesShowcaseComponent(bool isStarted)
-        => WithButton(new BackToNotesButton());
+        => WithButton(new NotesBackButton());
 }

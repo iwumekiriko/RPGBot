@@ -6,25 +6,25 @@ namespace RPGBot.UserInterface.Embeds;
 
 public class NotesShowcaseEmbed : DefaultEmbed
 {
-    public NotesShowcaseEmbed(Quest quest, int questProgress, bool isFinished)
+    public NotesShowcaseEmbed(KeyValuePair<Quest, Tuple<int, bool, bool>> quest)
     {
         var sb = new StringBuilder();
-        sb.Append($"**Required level: **{quest.RequiredLevel}\n");
-        sb.Append($"**Task:** {quest.ShortDescription}\n");
-        if (quest.ItemId != null)
-            sb.Append($"**Item reward: **{quest.ItemId}\n");
-        if (quest.MoneyReward != 0)
-            sb.Append($"**Money reward: **{quest.MoneyReward}\n");
-        sb.Append($"**Experience reward: **{quest.ExpReward}\n");
-        if (isFinished)
+        sb.Append($"**Required level: **{quest.Key.RequiredLevel}\n");
+        sb.Append($"**Task:** {quest.Key.ShortDescription}\n");
+        if (quest.Key.ItemId != null)
+            sb.Append($"**Item reward: **{quest.Key.ItemId}\n");
+        if (quest.Key.MoneyReward != 0)
+            sb.Append($"**Money reward: **{quest.Key.MoneyReward}\n");
+        sb.Append($"**Experience reward: **{quest.Key.ExpReward}\n");
+        if (quest.Value.Item3)
             sb.Append($"**Status: **Finished\n\n");
-        else if (questProgress == quest.NeededToComplete)
+        else if (quest.Value.Item1 == quest.Key.NeededToComplete)
             sb.Append($"**Status: **Completed\n\n");
         else
-            sb.Append($"**Status: **In progress ({questProgress}/{quest.NeededToComplete})\n\n");
-        sb.Append($"**Description:**\n{quest.FullDescription}");
+            sb.Append($"**Status: **In progress ({quest.Value.Item1}/{quest.Key.NeededToComplete})\n\n");
+        sb.Append($"**Description:**\n{quest.Key.FullDescription}");
 
-        Title = quest.Name;
+        Title = quest.Key.Name;
         Description = sb.ToString();
     }
 }

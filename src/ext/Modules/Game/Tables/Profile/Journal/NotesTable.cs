@@ -25,8 +25,8 @@ public class NotesTable(IServiceProvider services) : BaseModule(services)
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new NotesShowcaseEmbed(questInfo.Key, questInfo.Value.Item1, questInfo.Value.Item3).Build();
-            message.Components = new NotesShowcaseComponent(questInfo.Value.Item2).Build();
+            message.Embed = new NotesShowcaseEmbed(questInfo).Build();
+            message.Components = new NotesShowcaseComponent().Build();
         });
     }
 
@@ -42,7 +42,7 @@ public class NotesTable(IServiceProvider services) : BaseModule(services)
         });
     }
 
-    [ComponentInteraction("notesBackButton")]
+    [ComponentInteraction("backToNotesButton")]
     public async Task NotesBackButton()
     {
         var player = await GetOrCreatePlayerAsync();

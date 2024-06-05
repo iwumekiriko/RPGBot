@@ -6,7 +6,7 @@ public class BackToInventoryButton : ButtonBuilder
 {
     public BackToInventoryButton()
     {
-        Label = "Back to inventory";
+        Label = "Back";
         Style = ButtonStyle.Secondary;
         CustomId = "backToInventoryButton";
     }

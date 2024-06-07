@@ -6,25 +6,20 @@ namespace RPGBot.UserInterface.Embeds;
 
 public class NotesShowcaseEmbed : DefaultEmbed
 {
-    public NotesShowcaseEmbed(KeyValuePair<Quest, Tuple<int, bool, bool>> quest)
+    public NotesShowcaseEmbed(Quest quest)
     {
         var sb = new StringBuilder();
-        sb.Append($"**Required level: **{quest.Key.RequiredLevel}\n");
-        sb.Append($"**Task:** {quest.Key.ShortDescription}\n");
-        if (quest.Key.ItemId != null)
-            sb.Append($"**Item reward: **{quest.Key.ItemId}\n");
-        if (quest.Key.MoneyReward != 0)
-            sb.Append($"**Money reward: **{quest.Key.MoneyReward}\n");
-        sb.Append($"**Experience reward: **{quest.Key.ExpReward}\n");
-        if (quest.Value.Item3)
-            sb.Append($"**Status: **Finished\n\n");
-        else if (quest.Value.Item1 == quest.Key.NeededToComplete)
-            sb.Append($"**Status: **Completed\n\n");
-        else
-            sb.Append($"**Status: **In progress ({quest.Value.Item1}/{quest.Key.NeededToComplete})\n\n");
-        sb.Append($"**Description:**\n{quest.Key.FullDescription}");
+        sb.Append($"**Required level: **{quest.RequiredLevel}\n");
+        sb.Append($"**Task:** {quest.ShortDescription}\n");
+        if (quest.ItemId != null)
+            sb.Append($"**Item reward: **{quest.ItemId}\n");
+        if (quest.MoneyReward != 0)
+            sb.Append($"**Money reward: **{quest.MoneyReward}\n");
+        sb.Append($"**Experience reward: **{quest.ExpReward}\n");
+        sb.Append($"**Status: **\n\n");
+        sb.Append($"**Description:**\n{quest.FullDescription}");
 
-        Title = quest.Key.Name;
+        Title = quest.Name;
         Description = sb.ToString();
     }
 }

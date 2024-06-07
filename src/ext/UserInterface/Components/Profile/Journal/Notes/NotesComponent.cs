@@ -7,7 +7,7 @@ namespace RPGBot.UserInterface;
 
 public class NotesComponent : ComponentBuilder
 {
-    public NotesComponent(Dictionary<Quest, Tuple<int, bool>> quests)
+    public NotesComponent(List<Quest> quests)
         => WithSelectMenu(new ActiveQuestSelectMenu(quests))
           .WithButton(new BackToJournalButton());
 }

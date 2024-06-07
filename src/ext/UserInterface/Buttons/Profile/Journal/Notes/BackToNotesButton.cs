@@ -2,7 +2,7 @@
 
 namespace RPGBot.UserInterface.Buttons;
 
-public class BackToNotesButton: ButtonBuilder
+public class BackToNotesButton : ButtonBuilder
 {
     public BackToNotesButton()
     {

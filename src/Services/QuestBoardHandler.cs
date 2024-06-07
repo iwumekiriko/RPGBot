@@ -39,31 +39,22 @@ public class QuestBoardHandler
             .Select(q => quests[q.QuestId])
             .ToListAsync();
     }
-    public async Task<Dictionary<Quest, Tuple<int, bool>>> GetStartedPlayerQuests(Player player)
+    public async Task<List<Quest>> GetStartedPlayerQuests(Player player)
     {
         var quests = Quests.GetQuests();
-        var playerQuests = await _database.QuestBoard.Where(q =>
+        return await _database.QuestBoard.Where(q =>
                 q.GuildId == player.GuildId &&
                 q.UserId == player.UserId &&
                 q.IsStarted)
-            .Select(q => new KeyValuePair<Quest, Tuple<int, bool>>
-            (
-                quests[q.QuestId],
-                new Tuple<int, bool>(
-                    q.Progress, q.IsFinished
-                )
-            ))
-           // .OrderBy(q => q.Value.Item2)
-            .ToDictionaryAsync(q => q.Key, q => q.Value);
-
-        return playerQuests;
+            .Select(q => quests[q.QuestId])
+            .ToListAsync();
     }
     /// <summary>
     /// Shortcut for quest selection
     /// </summary>
     /// <param name="questId">quest's id</param>
     /// <returns>Quest by id or null if there is no such id in data</returns>
-    public Quest? GetQuest(int questId)
+    public static Quest? GetQuest(int questId)
         => Quests.GetQuests()[questId] ?? null;
     /// <summary>
     /// Compares data from database with local data to make QuestInfo

@@ -44,15 +44,4 @@ public class InventoryTable(IServiceProvider services) : BaseModule(services)
         await DeferAsync();
         await DeleteOriginalResponseAsync();
     }
-    [ComponentInteraction("useItemButton")]
-    public async Task UseItem()
-    {
-        var player = await GetOrCreatePlayerAsync();
-        var playerItems = await _inventory.GetPlayerItems(player);
-        await DeferAsync();
-        await FollowupAsync(
-            "You used the item...",
-            ephemeral: true
-        );
-    }
 }

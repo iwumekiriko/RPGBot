@@ -25,8 +25,8 @@ public class NotesTable(IServiceProvider services) : BaseModule(services)
         await Context.Interaction.DeferAsync();
         await ModifyOriginalResponseAsync(message =>
         {
-            message.Embed = new NotesShowcaseEmbed(questInfo).Build();
-            message.Components = new NotesShowcaseComponent().Build();
+            message.Embed = new NotesShowcaseEmbed(questInfo.Key).Build();
+            message.Components = new NotesShowcaseComponent(questInfo.Value.Item2).Build();
         });
     }
 

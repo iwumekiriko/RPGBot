@@ -7,7 +7,7 @@ public class BackToQuestBoardButton : ButtonBuilder
     public BackToQuestBoardButton()
     {
         Label = "Back";
-        Style = ButtonStyle.Secondary;
+        Style = ButtonStyle.Primary;
         CustomId = "backToQuestBoardButton";
     }
 }

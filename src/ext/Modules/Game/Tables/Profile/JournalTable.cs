@@ -35,15 +35,12 @@ public class JournalTable(IServiceProvider services) : BaseModule(services)
         );
     }
 
-    [ComponentInteraction("mailBoardButton")]
+    [ComponentInteraction("mailButton")]
     public async Task MailHandler()
     {
-        var player = await GetOrCreatePlayerAsync();
-        var playerQuests = await _questBoard.GetPlayerQuests(player);
         await DeferAsync();
         await FollowupAsync(
-            embed: new QuestBoardEmbed(playerQuests).Build(),
-            components: new QuestBoardComponent(playerQuests).Build(),
+            "Mail",
             ephemeral: true
         );
     }

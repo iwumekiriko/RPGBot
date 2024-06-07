@@ -5,7 +5,7 @@ namespace RPGBot.UserInterface.SelectMenues;
 
 public class ActiveQuestSelectMenu : SelectMenuBuilder
 {
-    public ActiveQuestSelectMenu(List<Quest> quests)
+    public ActiveQuestSelectMenu(Dictionary<Quest, Tuple<int, bool>> quests)
     {
         Placeholder = "Select Quest";
         CustomId = "activeQuestSelectMenu";
@@ -23,8 +23,8 @@ public class ActiveQuestSelectMenu : SelectMenuBuilder
         {
             foreach (var quest in quests)
                 AddOption(
-                    label: quest.Name,
-                    value: quest.Id.ToString()
+                    label: quest.Key.Name,
+                    value: quest.Key.Id.ToString()
                 );
         }
     }

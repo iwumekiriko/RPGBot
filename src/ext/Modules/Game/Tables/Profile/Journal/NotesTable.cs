@@ -30,18 +30,6 @@ public class NotesTable(IServiceProvider services) : BaseModule(services)
         });
     }
 
-    [ComponentInteraction("backToJournalButton")]
-    public async Task NotesBackToJournal()
-    {
-        await DeferAsync();
-        await ModifyOriginalResponseAsync(message =>
-        {
-            message.Content = null;
-            message.Embed = new JournalEmbed().Build();
-            message.Components = new JournalComponent().Build();
-        });
-    }
-
     [ComponentInteraction("backToNotesButton")]
     public async Task NotesBackButton()
     {

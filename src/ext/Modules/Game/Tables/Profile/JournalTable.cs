@@ -29,10 +29,11 @@ public class JournalTable(IServiceProvider services) : BaseModule(services)
     public async Task ArchivesHandler()
     {
         await DeferAsync();
-        await FollowupAsync(
-            "Archives",
-            ephemeral: true
-        );
+        await ModifyOriginalResponseAsync(message =>
+        {
+            message.Embed = new ArchivesEmbed().Build();
+            message.Components = new ArchivesComponent().Build();
+        });
     }
 
     [ComponentInteraction("mailButton")]
@@ -53,5 +54,17 @@ public class JournalTable(IServiceProvider services) : BaseModule(services)
             "Map",
             ephemeral: true
         );
+    }
+
+    [ComponentInteraction("backToJournalButton")]
+    public async Task NotesBackToJournal()
+    {
+        await DeferAsync();
+        await ModifyOriginalResponseAsync(message =>
+        {
+            message.Content = null;
+            message.Embed = new JournalEmbed().Build();
+            message.Components = new JournalComponent().Build();
+        });
     }
 }

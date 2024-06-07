@@ -5,6 +5,7 @@ using RPGBot.Database.Models;
 using RPGBot.Data;
 using Discord;
 using System.Numerics;
+using System.Linq;
 
 namespace RPGBot.Services;
 

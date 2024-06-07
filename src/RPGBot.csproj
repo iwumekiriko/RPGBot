@@ -76,6 +76,8 @@
     <Folder Include="ext\Modules\Game\Tables\Journey\" />
     <Folder Include="ext\Modules\Game\Tables\Options\" />
     <Folder Include="ext\UserInterface\Buttons\Options\" />
+    <Folder Include="ext\UserInterface\Embeds\Profile\Journal\Mail\" />
+    <Folder Include="ext\UserInterface\Embeds\Profile\Journal\Map\" />
     <Folder Include="ext\UserInterface\SelectMenus\Journey\" />
     <Folder Include="ext\UserInterface\SelectMenus\Options\" />
   </ItemGroup>

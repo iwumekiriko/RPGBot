@@ -43,20 +43,18 @@ public class QuestBoardHandler
     public async Task<Dictionary<Quest, Tuple<int, bool>>> GetStartedPlayerQuests(Player player)
     {
         var quests = Quests.GetQuests();
-        var playerQuests = await _database.QuestBoard.Where(q =>
+        var query = await _database.QuestBoard.Where(q =>
                 q.GuildId == player.GuildId &&
                 q.UserId == player.UserId &&
-                q.IsStarted)
+                q.IsStarted).ToListAsync();
+        var playerQuests = query
             .Select(q => new KeyValuePair<Quest, Tuple<int, bool>>
             (
                 quests[q.QuestId],
-                new Tuple<int, bool>(
-                    q.Progress, q.IsFinished
-                )
+                new Tuple<int, bool>(q.Progress, q.IsFinished)
             ))
-           // .OrderBy(q => q.Value.Item2)
-            .ToDictionaryAsync(q => q.Key, q => q.Value);
-
+            .OrderBy(q => q.Value.Item2).Take(25)
+            .ToDictionary(q => q.Key, q => q.Value);
         return playerQuests;
     }
     /// <summary>

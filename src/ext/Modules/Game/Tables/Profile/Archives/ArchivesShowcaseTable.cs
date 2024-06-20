@@ -1,13 +1,6 @@
 ﻿using Discord.Interactions;
-using Microsoft.EntityFrameworkCore;
-
-using RPGBot.UserInterface.Embeds;
-using RPGBot.UserInterface;
-using RPGBot.Database.Models;
-using RPGBot.Data;
+using RPGBot.UserInterface.Modals;
 using RPGBot.Modules.Game.Services;
-using RPGBot.UserInterface.SelectMenus;
-using Discord;
 
 namespace RPGBot.Modules.Game;
 

@@ -17,7 +17,7 @@ public class NotesTable(IServiceProvider services) : BaseModule(services)
     public async Task QuestShowcase(string[] selections)
     {
         var player = await GetOrCreatePlayerAsync();
-        var questId = Int32.Parse(selections.First());
+        var questId = int.Parse(selections.First());
         var questInfo = await _questBoard.GetQuestInfo(
             player, questId
         );

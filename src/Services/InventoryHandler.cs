@@ -41,16 +41,17 @@ public class InventoryHandler
     /// </summary>
     /// <param name="player">current user</param>
     /// <param name="itemId">item's id</param>
-    public async Task DropItemFromInventory(Player player, int? itemId)
+    public async Task<bool> DropItemFromInventory(Player player, int itemId, int amount = 1)
     {
-        if (itemId == null) return;
-
-        _database.Inventory.Where(
-        i => i.UserId == player.UserId &&
-             i.GuildId == player.GuildId &&
-             i.ItemId == itemId
-        ).First().Amount -= 1;
+        var inventoryItem = await _database.Inventory.FirstOrDefaultAsync(
+            i => i.UserId == player.UserId &&
+                i.GuildId == player.GuildId &&
+                i.ItemId == itemId
+        );
+        if (inventoryItem == null || inventoryItem.Amount < amount) return false;
+        inventoryItem.Amount -= amount;
         await _database.SaveChangesAsync();
+        return true;
     }
     /// <summary>
     /// Compares database data with local data and makes Items Dictionary

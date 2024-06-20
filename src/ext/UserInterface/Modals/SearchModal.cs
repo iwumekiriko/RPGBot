@@ -1,8 +1,6 @@
 ﻿using Discord;
-using RPGBot.Data;
-using System.Reflection.Emit;
 
-namespace RPGBot.UserInterface.SelectMenus;
+namespace RPGBot.UserInterface.Modals;
 
 public class SearchModal : ModalBuilder
 {

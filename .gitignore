@@ -30,3 +30,6 @@ Migrations/
 
 #Ignore sln file
 *.sln
+
+#Ignore editor settings
+.editorconfig

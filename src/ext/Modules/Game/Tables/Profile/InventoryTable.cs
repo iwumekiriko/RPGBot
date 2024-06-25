@@ -22,7 +22,7 @@ public class InventoryTable(IServiceProvider services) : BaseModule(services)
         await ModifyOriginalResponseAsync(message =>
         {
             message.Embed = new InventoryItemShowcaseEmbed(item).Build();
-            message.Components = new InventoryItemShowcaseComponent().Build();
+            message.Components = new InventoryItemShowcaseComponent(item).Build();
         });
     }
     [ComponentInteraction("backToInventoryButton")]
@@ -56,13 +56,13 @@ public class InventoryTable(IServiceProvider services) : BaseModule(services)
         {
             await RespondAsync("Not enough items");
         }
-            
+
     }
     [ComponentInteraction("dropItemsButton")]
     public async Task GetAmount()
     {
         await RespondWithModalAsync<DropItemsModal>("dropItemsModal");
-    } 
+    }
     [ModalInteraction("dropItemsModal")]
     public async Task DropItems(DropItemsModal modal)
     {
@@ -101,5 +101,20 @@ public class InventoryTable(IServiceProvider services) : BaseModule(services)
             "You used the item...",
             ephemeral: true
         );
+    }
+    [ComponentInteraction("equipButton")]
+    public async Task EquipButton()
+    {
+        await RespondWithModalAsync<EquipModal>("equipModal");
+    }
+    [ModalInteraction("equipModal")]
+    public async Task EquipHendler(EquipModal modal)
+    {
+        var player = await GetOrCreatePlayerAsync();
+        int slot;
+        await _equipment.EquipItem(player, CurrentItemId, Int32.Parse(modal.Slot));
+        await _inventory.DropItemFromInventory(player, CurrentItemId);
+        //await DeferAsync();
+        //await DeleteOriginalResponseAsync();
     }
 }

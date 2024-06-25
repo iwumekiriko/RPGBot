@@ -15,6 +15,7 @@ public partial class RPGBotEntities : DbContext
     public virtual DbSet<InventoryItem> Inventory { get; set; }
     public virtual DbSet<QuestBoardItem> QuestBoard { get; set; }
     public virtual DbSet<ImageCache> ImageCaches { get; set; }
+    public virtual DbSet<EquipmentItem> Equipment { get; set; }
 
     protected override async void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -33,5 +34,8 @@ public partial class RPGBotEntities : DbContext
 
         modelBuilder.Entity<QuestBoardItem>()
             .HasKey(i => new { i.UserId, i.GuildId, i.QuestId });
+
+        modelBuilder.Entity<EquipmentItem>()
+            .HasKey(i => new { i.UserId, i.GuildId, i.Slot });
     }
 }

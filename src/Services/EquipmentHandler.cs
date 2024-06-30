@@ -13,17 +13,14 @@ public class EquipmentHandler
 {
     private readonly ILogger _logger;
     private readonly RPGBotEntities _database;
-    private readonly InventoryHandler _inventory;
-
+    
     public EquipmentHandler(
         ILogger<StartupService> logger,
-        RPGBotEntities database,
-        InventoryHandler inventory
+        RPGBotEntities database 
     )
     {
         _logger = logger;
-        _database = database;
-        _inventory = inventory;
+        _database = database;  
     }
     public async Task<Dictionary<int, Item>> GetPlayerEquipment(Player player)
     {

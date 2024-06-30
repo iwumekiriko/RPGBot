@@ -4,6 +4,7 @@ using RPGBot.UserInterface;
 using RPGBot.UserInterface.Embeds;
 using RPGBot.UserInterface.Modals;
 using RPGBot.Modules.Game.Services;
+using RPGBot.Data;
 
 namespace RPGBot.Modules.Game;
 
@@ -105,16 +106,27 @@ public class InventoryTable(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("equipButton")]
     public async Task EquipButton()
     {
-        await RespondWithModalAsync<EquipModal>("equipModal");
+        var item = _inventory.GetItem(CurrentItemId) ??
+            throw new InvalidDataException();
+        await DeferAsync();
+        await ModifyOriginalResponseAsync(message =>
+        {
+            message.Embed = new InventoryItemShowcaseEmbed(item).Build();
+            message.Components = new SlotSelectComponent(item).Build();
+        });
     }
-    [ModalInteraction("equipModal")]
-    public async Task EquipHendler(EquipModal modal)
-    {
-        var player = await GetOrCreatePlayerAsync();
-        int slot;
-        await _equipment.EquipItem(player, CurrentItemId, Int32.Parse(modal.Slot));
-        await _inventory.DropItemFromInventory(player, CurrentItemId);
-        //await DeferAsync();
-        //await DeleteOriginalResponseAsync();
-    }
+    //public async Task EquipButton()
+    //{
+    //    await RespondWithModalAsync<EquipModal>("equipModal");
+    //}
+    //[ModalInteraction("equipModal")]
+    //public async Task EquipHendler(EquipModal modal)
+    //{
+    //    var player = await GetOrCreatePlayerAsync();
+    //    int slot;
+    //    await _equipment.EquipItem(player, CurrentItemId, Int32.Parse(modal.Slot));
+    //    await _inventory.DropItemFromInventory(player, CurrentItemId);
+    //    //await DeferAsync();
+    //    //await DeleteOriginalResponseAsync();
+    //}
 }

@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace RPGBot.UserInterface.Buttons;
+namespace RPGBot.ext.UserInterface.Buttons.Profile.Journal.Notes;
 
 public class BackToJournalButton : ButtonBuilder
 {

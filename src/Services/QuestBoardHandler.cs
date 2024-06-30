@@ -46,13 +46,13 @@ public class QuestBoardHandler
         var query = await _database.QuestBoard.Where(q =>
                 q.GuildId == player.GuildId &&
                 q.UserId == player.UserId &&
-                q.IsStarted).ToListAsync();
-        var playerQuests = query
+                q.IsStarted)
             .Select(q => new KeyValuePair<Quest, Tuple<int, bool>>
             (
                 quests[q.QuestId],
                 new Tuple<int, bool>(q.Progress, q.IsFinished)
-            ))
+            )).ToListAsync();
+        var playerQuests = query
             .OrderBy(q => q.Value.Item2).Take(25)
             .ToDictionary(q => q.Key, q => q.Value);
         return playerQuests;

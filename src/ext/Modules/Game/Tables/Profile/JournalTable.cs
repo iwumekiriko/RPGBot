@@ -50,10 +50,11 @@ public class JournalTable(IServiceProvider services) : BaseModule(services)
     public async Task MapHandler()
     {
         await DeferAsync();
-        await FollowupAsync(
-            "Map",
-            ephemeral: true
-        );
+        await ModifyOriginalResponseAsync(message =>
+        {
+            message.Embed = new MapEmbed().Build();
+            message.Components = new MapComponent().Build();
+        });
     }
 
     [ComponentInteraction("backToJournalButton")]

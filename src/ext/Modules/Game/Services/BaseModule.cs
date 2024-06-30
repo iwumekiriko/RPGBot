@@ -25,6 +25,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     public readonly InventoryHandler _inventory;
     public readonly QuestBoardHandler _questBoard;
     public readonly ShopHandler _shop;
+    public readonly EquipmentHandler _equipment;
 
     public static readonly EmbedBuilder mainEmbed = new MainTableEmbed();
     public static readonly ComponentBuilder mainComponent = new MainTableComponent();
@@ -38,6 +39,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
         _inventory = services.GetRequiredService<InventoryHandler>();
         _questBoard = services.GetRequiredService<QuestBoardHandler>();
         _shop = services.GetRequiredService<ShopHandler>();
+        _equipment = services.GetRequiredService<EquipmentHandler>();
     }
     /// <summary>
     /// Returns player if it exists in database or creates a new one
@@ -65,6 +67,7 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
     {
         AddUsersInventory(guild, user);
         AddUserQuests(guild, user);
+        AddUserEquipment(guild, user);
         return Task.CompletedTask;
     }
     private void AddUsersInventory(Guild guild, User user)
@@ -87,6 +90,16 @@ public class BaseModule : InteractionModuleBase<SocketInteractionContext>
                 User = user,
                 Guild = guild,
                 QuestId = quest.Key
+            });
+    }
+    private void AddUserEquipment(Guild guild, User user)
+    {
+        for (int i = 1; i<=4; i++)
+            _database.Equipment.Add(new EquipmentItem
+            {
+                User = user,
+                Guild = guild,
+                Slot = i
             });
     }
 }

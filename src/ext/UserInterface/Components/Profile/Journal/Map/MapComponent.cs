@@ -6,9 +6,9 @@ using RPGBot.UserInterface.SelectMenues;
 
 namespace RPGBot.UserInterface;
 
-public class NotesComponent : ComponentBuilder
+public class MapComponent : ComponentBuilder
 {
-    public NotesComponent(Dictionary<Quest, Tuple<int, bool>> quests)
-        => WithSelectMenu(new ActiveQuestSelectMenu(quests))
+    public MapComponent()
+        => WithSelectMenu(new LocationSelectMenu())
           .WithButton(new BackToJournalButton());
 }

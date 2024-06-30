@@ -12,9 +12,12 @@ public class ProfileTable(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("equipmentButton")]
     public async Task EquipmentHandler()
     {
+        var player = await GetOrCreatePlayerAsync();
+        var playerEquipment = await _equipment.GetPlayerEquipment(player);
         await DeferAsync();
         await FollowupAsync(
-            "Equipment",
+            embed: new EquipmentEmbed(playerEquipment).Build(),
+            components: new EquipmentComponent(playerEquipment).Build(),
             ephemeral: true
         );
     }

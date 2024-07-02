@@ -1,1 +1,1 @@
-HELLO!
+Discord RPGBot on C#

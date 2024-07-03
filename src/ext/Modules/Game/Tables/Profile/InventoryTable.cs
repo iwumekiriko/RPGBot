@@ -124,9 +124,19 @@ public class InventoryTable(IServiceProvider services) : BaseModule(services)
     //{
     //    var player = await GetOrCreatePlayerAsync();
     //    int slot;
-    //    await _equipment.EquipItem(player, CurrentItemId, Int32.Parse(modal.Slot));
-    //    await _inventory.DropItemFromInventory(player, CurrentItemId);
+    //    await _equipment.EquipItem(player, CurrentItemId, int.Parse(modal.Slot));
     //    //await DeferAsync();
     //    //await DeleteOriginalResponseAsync();
     //}
+    [ComponentInteraction("slot1Button")]
+    public async Task EquipItem()
+    {
+        var player = await GetOrCreatePlayerAsync();
+        await _equipment.EquipItem(player, CurrentItemId, 1);
+        await DeferAsync();
+        await FollowupAsync(
+            "Equipped",
+            ephemeral: true
+        );
+    }
 }

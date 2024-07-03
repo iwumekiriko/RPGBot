@@ -13,14 +13,17 @@ public class EquipmentHandler
 {
     private readonly ILogger _logger;
     private readonly RPGBotEntities _database;
-    
+    private readonly InventoryHandler _inventory;
+
     public EquipmentHandler(
         ILogger<StartupService> logger,
-        RPGBotEntities database 
+        RPGBotEntities database,
+        InventoryHandler inventory
     )
     {
         _logger = logger;
-        _database = database;  
+        _database = database;
+        _inventory = inventory;
     }
     public async Task<Dictionary<int, Item>> GetPlayerEquipment(Player player)
     {
@@ -44,11 +47,24 @@ public class EquipmentHandler
              i.GuildId == player.GuildId &&
              i.ItemId == itemId
         ).First().ItemId = 0;
-        await _database.SaveChangesAsync();
+
+        await _inventory.AddItemToInventory(player, itemId);
     }
     public async Task EquipItem(Player player, int itemId, int slot)
     {
         if (itemId == null) return;
+
+        var equippedItemId = _database.Equipment.Where(
+                    i => i.GuildId == player.GuildId &&
+                         i.UserId == player.UserId &&
+                         i.Slot == slot
+                    ).First().ItemId;
+
+        if (equippedItemId != 0) 
+            await RemoveItem(player, equippedItemId);
+
+        if (_database.Equipment.Where(i => i.GuildId == player.GuildId && i.UserId == player.UserId && i.ItemId == itemId).FirstOrDefault() != null) 
+            await RemoveItem(player, itemId);
 
         _database.Equipment.Where(
             i => i.GuildId == player.GuildId &&
@@ -56,6 +72,6 @@ public class EquipmentHandler
                  i.Slot == slot
             ).First().ItemId = itemId;
 
-        await _database.SaveChangesAsync();
+        await _inventory.DropItemFromInventory(player, itemId);
     }
 }

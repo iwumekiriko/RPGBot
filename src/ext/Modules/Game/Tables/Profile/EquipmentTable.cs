@@ -15,7 +15,7 @@ public class EquipmentTable(IServiceProvider services) : BaseModule(services)
     [ComponentInteraction("equipmentSelectMenu")]
     public async Task InventoryItemShowcase(string[] selections)
     {
-        var itemId = Int32.Parse(selections.First());
+        var itemId = int.Parse(selections.First());
         var item = _inventory.GetItem(itemId) ??
             throw new InvalidDataException();
         CurrentItemId = itemId;
@@ -43,7 +43,6 @@ public class EquipmentTable(IServiceProvider services) : BaseModule(services)
     {
         var player = await GetOrCreatePlayerAsync();
         await _equipment.RemoveItem(player, CurrentItemId);
-        await _inventory.AddItemToInventory(player, CurrentItemId);
         var playerEquipment = await _equipment.GetPlayerEquipment(player);
         await DeferAsync();
         await ModifyOriginalResponseAsync(message =>

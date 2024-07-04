@@ -18,7 +18,7 @@ public class NotesShowcaseEmbed : DefaultEmbed
         sb.Append($"**Experience reward: **{quest.Key.ExpReward}\n");
         if (quest.Value.Item3)
             sb.Append($"**Status: **Finished\n\n");
-        else if (quest.Value.Item1 == quest.Key.NeededToComplete)
+        else if (quest.Value.Item1 >= quest.Key.NeededToComplete)
             sb.Append($"**Status: **Completed\n\n");
         else
             sb.Append($"**Status: **In progress ({quest.Value.Item1}/{quest.Key.NeededToComplete})\n\n");
